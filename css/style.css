@@ -9,7 +9,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 #bgCanvas {
@@ -19,42 +19,34 @@ body {
   pointer-events: none;
 }
 
-/* ========== アプリコンテナ（モックアップ比率固定） ========== */
+/* ========== アプリコンテナ（巨大カードのアスペクト比固定） ========== */
 .app {
   position: relative;
   z-index: 1;
   width: 100%;
   max-width: 440px;
-  /* モックアップ画像の縦横比 (718x1070) に合わせる */
+  /* タロットカード全体画像 (718x1070) のアスペクト比 */
   aspect-ratio: 718 / 1070;
   margin: 0 auto;
-  background: url('../images/result_bg.png') no-repeat center center;
-  background-size: cover;
-  box-shadow: 0 0 50px rgba(0, 0, 0, 0.9), 0 0 100px rgba(106, 26, 154, 0.2);
-  display: flex;
-  flex-direction: column;
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.9), 0 0 100px rgba(106, 26, 154, 0.3);
   overflow: hidden;
+  background: transparent;
 }
 
-/* ヘッダーは背景画像に含まれているため、HTML側は非表示にする */
 #appHeader {
   display: none;
 }
 
-/* メインセクション */
 .main-section {
   position: relative;
   width: 100%;
   height: 100%;
 }
 
-/* ========== カードの配置（背景のカード枠に完全一致） ========== */
+/* ========== 巨大フリップカード (画面全体が1枚のカード) ========== */
 .card-scene {
   position: absolute;
-  top: 16.8%;
-  left: 23.2%;
-  width: 53.6%;
-  height: 58.2%;
+  inset: 0;
   perspective: 1200px;
   cursor: pointer;
   z-index: 10;
@@ -75,14 +67,11 @@ body {
   position: absolute;
   inset: 0;
   backface-visibility: hidden;
-  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 0 25px rgba(0, 0, 0, 0.6);
 }
 
-/* 表面：裏向き状態 */
 .card-front {
-  background: #110524;
+  background: #0d0520;
 }
 .card-front img {
   width: 100%;
@@ -91,10 +80,9 @@ body {
   display: block;
 }
 
-/* 裏面：カードの内容 */
 .card-back-face {
   transform: rotateY(180deg);
-  background: #110524;
+  background: #0d0520;
   position: relative;
 }
 .card-back-face img {
@@ -104,49 +92,54 @@ body {
   display: block;
 }
 
-/* カード前面に重ねるテキスト情報 */
+/* ========== カード表面（結果）に重ねる動的テキストの位置決め ========== */
 .card-overlay-content {
   position: absolute;
   inset: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12% 8% 10%;
-  background: linear-gradient(to bottom, rgba(13, 5, 32, 0.55) 0%, rgba(13, 5, 32, 0.1) 40%, rgba(13, 5, 32, 0.8) 100%);
   pointer-events: none;
 }
 
+/* ― ○○の導き ― */
 .card-guide-title {
+  position: absolute;
+  top: 32.5%;
+  left: 0;
+  width: 100%;
+  text-align: center;
   font-size: 13px;
   font-weight: 400;
   color: #f0d080;
   letter-spacing: 2px;
   text-shadow: 0 0 10px rgba(240, 208, 128, 0.6);
-  text-align: center;
 }
 
+/* AIメッセージ */
 .card-main-message {
+  position: absolute;
+  top: 40%;
+  left: 10%;
+  width: 80%;
+  height: 16%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 17px;
   font-weight: 700;
   line-height: 1.8;
   color: #ffffff;
   text-align: center;
   text-shadow: 0 2px 15px rgba(0, 0, 0, 0.95), 0 0 20px rgba(106, 26, 154, 0.8);
-  margin-top: 15%;
-  margin-bottom: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 45%;
 }
 
+/* カード英語名・日本語名 */
 .card-name-area {
+  position: absolute;
+  top: 68.5%;
+  left: 0;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: auto;
-  width: 100%;
 }
 .card-name-en {
   font-family: 'Cinzel Decorative', cursive;
@@ -163,105 +156,99 @@ body {
   letter-spacing: 2px;
 }
 
-/* ========== ボタン・アクションエリア ========== */
+/* ========== アクションボタン（カード画像の下部ボタン枠に重ねる） ========== */
 .action-container {
   position: absolute;
-  bottom: 8%;
-  left: 10%;
-  width: 80%;
+  top: 85.5%;
+  left: 12%;
+  width: 76%;
+  height: 6%;
   z-index: 20;
-  text-align: center;
 }
 
-/* カードを引くボタン */
+/* 初期状態のカードを引くボタン */
 .invoke-btn {
   width: 100%;
-  padding: 16px;
-  background: linear-gradient(135deg, #4b1b8c, #1d073d);
-  border: 1px solid #c9a84c;
-  border-radius: 30px;
-  color: #f0d080;
+  height: 100%;
+  background: transparent;
+  border: none;
+  color: #ffffff;
   font-family: inherit;
   font-size: 15px;
   font-weight: 700;
   letter-spacing: 4px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 15px rgba(201, 168, 76, 0.2);
+  outline: none;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  transition: text-shadow 0.3s ease;
 }
 .invoke-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.6), 0 0 25px rgba(201, 168, 76, 0.4);
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.9), 0 0 20px rgba(201, 168, 76, 0.4);
 }
 .invoke-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-  transform: none;
 }
 
-/* ローディング表示 */
+/* ローディング表示の位置調整 */
 .loading-inline {
   display: none;
-  margin-top: 15px;
+  position: absolute;
+  top: -75px;
+  left: 0;
+  width: 100%;
+  text-align: center;
 }
 .loading-inline.show {
   display: block;
 }
 .loading-inline .orb {
-  width: 32px;
-  height: 32px;
-  margin: 0 auto 8px;
+  width: 28px;
+  height: 28px;
+  margin: 0 auto 6px;
   border-radius: 50%;
   background: radial-gradient(circle at 35% 35%, rgba(240, 208, 128, 0.9), rgba(106, 26, 154, 0.6));
   animation: orbPulse 1.5s ease-in-out infinite;
 }
 @keyframes orbPulse {
   0%, 100% { transform: scale(1); box-shadow: 0 0 15px rgba(201, 168, 76, 0.4); }
-  50% { transform: scale(1.15); box-shadow: 0 0 35px rgba(106, 26, 154, 0.8); }
+  50% { transform: scale(1.15); box-shadow: 0 0 30px rgba(106, 26, 154, 0.7); }
 }
 .loading-inline .lt {
   font-size: 11px;
   letter-spacing: 2px;
   color: #7a7060;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
 }
 
 /* ========== 結果表示の追加要素 ========== */
 .result-extras {
-  display: none;
   position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 25%;
+  inset: 0;
   z-index: 15;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  align-items: center;
-  padding-bottom: 3.5%;
-  opacity: 0;
   pointer-events: none;
+  opacity: 0;
   transition: opacity 0.8s ease;
 }
-
 .result-extras.show {
-  display: flex;
   opacity: 1;
   pointer-events: auto;
 }
 
 /* 恋愛運の星評価の位置合わせ */
 .love-fortune {
-  text-align: center;
-  margin-bottom: 2.2%;
+  position: absolute;
+  top: 77.8%;
+  left: 0;
   width: 100%;
+  text-align: center;
 }
 .love-label {
-  font-size: 11px;
+  font-size: 10px;
   letter-spacing: 3px;
   color: #7a6230;
-  margin-bottom: 3px;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+  margin-bottom: 2px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
 }
 .stars-row {
   font-size: 20px;
@@ -270,10 +257,13 @@ body {
   text-shadow: 0 0 8px rgba(240, 208, 128, 0.6);
 }
 
-/* もう一度占うボタン（モックアップ枠に重ねる） */
+/* もう一度占うボタン（モックアップ画像のボタン枠に完全に重ねる） */
 .again-btn {
+  position: absolute;
+  top: 85.5%;
+  left: 12%;
   width: 76%;
-  padding: 11px 0;
+  height: 6%;
   background: transparent;
   border: none;
   color: #ffffff;
@@ -281,9 +271,6 @@ body {
   font-size: 15px;
   letter-spacing: 3px;
   cursor: pointer;
-  transition: all 0.3s;
-  margin-bottom: 2%;
-  /* モックアップ画像のボタン位置に完璧に重ねるための透明化 */
   outline: none;
 }
 .again-btn:hover {
@@ -292,12 +279,16 @@ body {
 
 /* 履歴リンク */
 .history-link {
+  position: absolute;
+  top: 93.5%;
+  left: 0;
+  width: 100%;
+  text-align: center;
   color: #7a7060;
   font-size: 11px;
   letter-spacing: 2px;
   cursor: pointer;
   transition: color 0.3s;
-  padding: 2px 10px;
 }
 .history-link:hover {
   color: #c9a84c;
@@ -305,12 +296,12 @@ body {
 
 /* ========== カードの光アニメーション ========== */
 @keyframes cardGlow {
-  0% { box-shadow: 0 0 15px rgba(201, 168, 76, 0.3); }
-  50% { box-shadow: 0 0 45px rgba(201, 168, 76, 0.8), 0 0 80px rgba(106, 26, 154, 0.5); }
-  100% { box-shadow: 0 0 15px rgba(201, 168, 76, 0.3); }
+  0% { box-shadow: 0 0 15px rgba(201, 168, 76, 0.2); }
+  50% { box-shadow: 0 0 45px rgba(201, 168, 76, 0.6), 0 0 80px rgba(106, 26, 154, 0.4); }
+  100% { box-shadow: 0 0 15px rgba(201, 168, 76, 0.2); }
 }
 .glow-anim {
-  animation: cardGlow 1.5s ease-in-out infinite;
+  animation: cardGlow 1.8s ease-in-out infinite;
 }
 
 /* ========== 履歴モーダル ========== */
