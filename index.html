@@ -15,96 +15,68 @@
 <body>
 <canvas id="bgCanvas"></canvas>
 
-<div class="app">
-  <!-- ヘッダー -->
-  <div class="header">
+<!-- アプリ全体コンテナ（モックアップ背景を使用） -->
+<div class="app" id="appContainer">
+  <!-- ヘッダー（背景画像に含まれているため、初期状態でのみ表示するか非表示にする。今回は重ねる形で再現） -->
+  <div class="header" id="appHeader">
     <div class="header-en">TAROT READING</div>
     <div class="header-title">あの人の気持ち</div>
     <div class="gold-divider"><span>✦</span></div>
     <div class="header-sub">タロットカードがあなたに伝えたいこと</div>
   </div>
 
-  <!-- フォーム＋カード -->
-  <div id="formSection">
-    <div class="form-box">
-      <div class="c-bl"></div><div class="c-br"></div>
-
-      <!-- カード（フォーム内） -->
-      <div class="form-card-wrap">
-        <div class="card-hint" id="cardHint">✦ カードをクリックして引く ✦</div>
-        <div class="card-scene" id="cardScene">
-          <div class="card-flipper" id="cardFlipper">
-            <!-- 表面：裏向き状態 -->
-            <div class="card-face card-front" id="cardFrontFace">
-              <img src="images/card_back.png" alt="カードの裏面" style="width: 100%; height: 100%; object-fit: cover;">
-            </div>
-            <!-- 裏面：カード内容 -->
-            <div class="card-face card-back-face" id="cardBackFace">
-              <!-- JSで動的に設定するか、初期画像を設定 -->
-              <img id="cardBackImg" src="" alt="カード表面" style="width: 100%; height: 100%; object-fit: cover;">
-            </div>
+  <!-- 占いメインセクション -->
+  <div class="main-section">
+    <!-- 3Dフリップカード（背景のカード位置にぴったり重ねる） -->
+    <div class="card-scene" id="cardScene">
+      <div class="card-flipper" id="cardFlipper">
+        <!-- 表面：裏向き状態 -->
+        <div class="card-face card-front" id="cardFrontFace">
+          <img src="images/card_back.png" alt="カードの裏面">
+        </div>
+        <!-- 裏面：引いたカードとメッセージ -->
+        <div class="card-face card-back-face" id="cardBackFace">
+          <!-- 引いたタロットカードの絵（例：card_fool.png） -->
+          <img id="cardBackImg" src="" alt="カード表面">
+          <!-- その上に重ねる動的テキスト -->
+          <div class="card-overlay-content">
+            <div class="card-guide-title" id="cardGuideTitle">― 月の導き ―</div>
+            <div class="card-main-message" id="cardMainMessage">あなたのことをもっと知りたいと思っています</div>
           </div>
         </div>
       </div>
+    </div>
 
+    <!-- 初期ボタン：カードを引く -->
+    <div class="action-container" id="initAction">
       <button class="invoke-btn" id="invokeBtn">✦ カードを引く ✦</button>
-
       <!-- ローディング -->
       <div class="loading-inline" id="loadingInline">
         <div class="orb"></div>
         <div class="lt" id="loadingText">星に問いかけています…</div>
       </div>
     </div>
-  </div>
 
-  <!-- エラー確認用トースト -->
-  <div id="debugToast" style="
-    display:none; position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
-    background:rgba(60,20,80,0.97); color:#f0d080; padding:14px 20px;
-    border:1px solid rgba(201,168,76,0.5); border-radius:8px;
-    font-size:12px; max-width:320px; text-align:center;
-    z-index:9999; word-break:break-all; line-height:1.8;
-  "></div>
-
-  <!-- 結果エリア -->
-  <div class="result-area" id="resultArea">
-    <div class="result-box">
-      <div class="result-moon-top">
-        <span class="result-moon-icon">🌙</span>
-        <span class="result-guide-label">✦ THE ORACLE ✦</span>
-      </div>
-
-      <div class="result-message-area">
-        <div class="result-message" id="resultMessage"></div>
-      </div>
-
-      <div class="result-arcana" id="resultArcana">
-        <div class="result-arcana-visual" id="resultArcanaVisual">
-          <img id="resultCardImg" src="" alt="タロットカード" style="width: 100%; height: 100%; object-fit: cover; border-radius: 6px;">
-        </div>
-        <div class="result-arcana-info">
-          <div class="reversed-badge" id="reversedBadge" style="display:none">逆位置</div>
-          <div class="result-arcana-en" id="resultArcanaEn"></div>
-          <div class="result-arcana-ja" id="resultArcanaJa"></div>
-        </div>
-      </div>
-
+    <!-- 結果追加要素（占い後にフェードイン） -->
+    <div class="result-extras" id="resultExtras">
       <div class="love-fortune">
-        <div class="love-label">縁の強さ</div>
-        <div class="stars-row" id="starsRow"></div>
+        <div class="love-label">今日の恋愛運</div>
+        <div class="stars-row" id="starsRow">★★★★☆</div>
       </div>
-    </div>
-
-    <button class="again-btn" id="againBtn">✦ もう一度占う ✦</button>
-    <span class="history-link" id="historyLink">▸ 過去の鑑定を見る</span>
-
-    <!-- STORESバナー -->
-    <div class="stores-banner">
-      <p>さらに詳しい鑑定・個人セッションは<br>こちらからご予約いただけます。</p>
-      <a href="#" class="stores-btn" id="storesBtn">詳しい鑑定を予約する</a>
+      <button class="again-btn" id="againBtn">もう一度占う</button>
+      <span class="history-link" id="historyLink">鑑定履歴を見る ＞</span>
     </div>
   </div>
 </div>
+
+<!-- エラー確認用トースト -->
+<div id="debugToast" style="
+  display:none; position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+  background:rgba(60,20,80,0.97); color:#f0d080; padding:14px 20px;
+  border:1px solid rgba(201,168,76,0.5); border-radius:8px;
+  font-size:12px; max-width:320px; text-align:center;
+  z-index:9999; word-break:break-all; line-height:1.8;
+"></div>
 
 <!-- 履歴モーダル -->
 <div class="modal-overlay" id="modalOverlay">

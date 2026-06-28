@@ -3,32 +3,27 @@
  * -----------------------------------
  * メインアプリケーションロジック
  * - カード引き（入力不要）
- * - Gemini API 呼び出し
- * - 履歴管理（localStorage）
+ * - モックアップ完全移植対応
  * -----------------------------------
  */
 
 // ========== DOM要素 ==========
 const invokeBtn          = document.getElementById('invokeBtn');
+const initAction         = document.getElementById('initAction');
 const cardScene          = document.getElementById('cardScene');
 const cardFlipper        = document.getElementById('cardFlipper');
 const cardBackImg        = document.getElementById('cardBackImg');
+const cardGuideTitle     = document.getElementById('cardGuideTitle');
+const cardMainMessage    = document.getElementById('cardMainMessage');
 const loadingInline      = document.getElementById('loadingInline');
 const loadingText        = document.getElementById('loadingText');
-const resultArea         = document.getElementById('resultArea');
-const resultMessage      = document.getElementById('resultMessage');
-const resultArcanaVisual = document.getElementById('resultArcanaVisual');
-const resultCardImg      = document.getElementById('resultCardImg');
-const reversedBadge      = document.getElementById('reversedBadge');
-const resultArcanaEn     = document.getElementById('resultArcanaEn');
-const resultArcanaJa     = document.getElementById('resultArcanaJa');
+const resultExtras       = document.getElementById('resultExtras');
 const starsRow           = document.getElementById('starsRow');
 const againBtn           = document.getElementById('againBtn');
 const historyLink        = document.getElementById('historyLink');
 const modalOverlay       = document.getElementById('modalOverlay');
 const modalClose         = document.getElementById('modalClose');
 const historyList        = document.getElementById('historyList');
-const storesBtn          = document.getElementById('storesBtn');
 const debugToast         = document.getElementById('debugToast');
 
 // ========== 状態変数 ==========
@@ -37,13 +32,6 @@ let isAnimating = false;
 
 // ========== 初期化 ==========
 function init() {
-  // STORESリンクを設定
-  if (storesBtn && CONFIG.STORES_URL) {
-    storesBtn.href   = CONFIG.STORES_URL;
-    storesBtn.target = '_blank';
-    storesBtn.rel    = 'noopener noreferrer';
-  }
-
   cardScene.addEventListener('click', handleInvoke);
   invokeBtn.addEventListener('click', handleInvoke);
   againBtn.addEventListener('click', handleReset);
@@ -64,16 +52,23 @@ async function handleInvoke() {
   invokeBtn.disabled = true;
   loadingInline.classList.add('show');
 
-  // カード表面画像を事前ロード（フリップ後に見える面）
+  // カード表面画像を事前ロード
   await loadCardImage(cardBackImg, card.image);
+
+  // ガイドタイトルとメッセージの初期セット（フリップ時にすぐ読めるようにする）
+  cardGuideTitle.textContent = `― ${card.ja}の導き ―`;
+  cardMainMessage.textContent = '運命の糸を解いています…';
 
   await sleep(400);
   flipCard();
 
+  // AIメッセージを取得
   const message = await fetchMessage(card, isReversed);
 
+  // メッセージと結果追加要素を表示
   showResult(card, isReversed, message);
 
+  // 履歴に保存
   saveHistory({
     date:     new Date().toLocaleString('ja-JP'),
     cardEn:   card.en,
@@ -86,20 +81,16 @@ async function handleInvoke() {
   isAnimating = false;
 }
 
-// ========== 画像ロード（フォールバック付き） ==========
+// ========== 画像ロード ==========
 function loadCardImage(imgEl, src) {
   return new Promise((resolve) => {
     const img = new Image();
     img.onload = () => {
       imgEl.src = src;
-      imgEl.style.display = 'block';
       resolve();
     };
     img.onerror = () => {
-      // 画像が存在しない場合はフォールバック表示
-      imgEl.src = '';
-      imgEl.style.display = 'none';
-      imgEl.parentElement.dataset.fallback = 'true';
+      imgEl.src = 'images/cards/card_moon.png'; // 最悪の場合MOON画像にフォールバック
       resolve();
     };
     img.src = src;
@@ -115,27 +106,19 @@ function flipCard() {
 
 // ========== 結果表示 ==========
 function showResult(card, isReversed, message) {
-  resultMessage.innerHTML = message.replace(/\n/g, '<br>');
+  // メッセージ切り替え
+  cardMainMessage.innerHTML = message.replace(/\n/g, '<br>');
+  cardGuideTitle.textContent = `― ${card.ja}の導き ―`;
+  if (isReversed) {
+    cardGuideTitle.textContent += ' (逆位置)';
+  }
 
-  // 結果エリアのカード画像（フォールバック付き）
-  loadCardImage(resultCardImg, card.image).then(() => {
-    if (!resultCardImg.src || resultCardImg.style.display === 'none') {
-      // 画像なしのフォールバック：絵文字で代替
-      resultArcanaVisual.innerHTML = `<span style="font-size:40px;display:flex;align-items:center;justify-content:center;height:100%">${card.emoji}</span>`;
-    }
-  });
+  // 星評価を設定
+  starsRow.textContent = getStars(card, isReversed);
 
-  resultArcanaVisual.classList.toggle('reversed', isReversed);
-  reversedBadge.style.display = isReversed ? 'inline-block' : 'none';
-  resultArcanaEn.textContent  = card.en;
-  resultArcanaJa.textContent  = card.ja;
-  starsRow.textContent        = getStars(card, isReversed);
-
-  resultArea.classList.add('show', 'fade-in-up');
-
-  setTimeout(() => {
-    resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, 400);
+  // アクションボタンを切り替え
+  initAction.style.display = 'none';
+  resultExtras.classList.add('show');
 }
 
 // ========== Gemini API 呼び出し ==========
@@ -153,7 +136,8 @@ async function fetchMessage(card, isReversed) {
 - テーマ: 気になるあの人の気持ち
 
 要件:
-- 70〜100文字程度でまとめてください
+- 30〜50文字程度で、短く一言で心に響くメッセージにしてください
+- 占いカードの中央に配置されるため、長い文章は避けてください
 - 神秘的で温かみのある文体にしてください
 - 具体的でポジティブ（逆位置でも希望を感じさせる）内容にしてください
 - 「。」で文を区切ってください
@@ -161,13 +145,12 @@ async function fetchMessage(card, isReversed) {
 メッセージのみを出力してください（前置きや説明は不要）。
 `.trim();
 
-  // リトライ設定（429対策）
   const MAX_RETRIES = 2;
   for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
     try {
       if (attempt > 0) {
         if (loadingText) loadingText.textContent = `星に再び問いかけています… (${attempt}/${MAX_RETRIES})`;
-        await sleep(2000 * attempt); // 待機時間を増やしてリトライ
+        await sleep(2000 * attempt);
       }
 
       const response = await fetch(
@@ -177,7 +160,7 @@ async function fetchMessage(card, isReversed) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: { temperature: 0.9, maxOutputTokens: 200 },
+            generationConfig: { temperature: 0.9, maxOutputTokens: 100 },
           }),
         }
       );
@@ -185,12 +168,11 @@ async function fetchMessage(card, isReversed) {
       if (response.status === 429) {
         if (attempt < MAX_RETRIES) continue;
         showToast('⚠️ APIレート制限中\nしばらく待ってから再度お試しください');
-        console.warn('Gemini API: レート制限のためデフォルトメッセージを使用します');
         return getCardMessage(card, isReversed);
       }
 
       if (!response.ok) {
-        showToast(`⚠️ API エラー: ${response.status}\n内容: ${await response.text().then(t=>t.slice(0,80))}`);
+        showToast(`⚠️ API エラー: ${response.status}`);
         throw new Error(`API Error: ${response.status}`);
       }
 
@@ -200,7 +182,6 @@ async function fetchMessage(card, isReversed) {
 
     } catch (err) {
       if (attempt < MAX_RETRIES) continue;
-      console.warn('Gemini API エラー。デフォルトメッセージを使用します。', err);
       return getCardMessage(card, isReversed);
     }
   }
@@ -213,10 +194,9 @@ function handleReset() {
   cardScene.classList.remove('glow-anim');
   isFlipped = false;
 
-  resultArea.classList.remove('show', 'fade-in-up');
+  resultExtras.classList.remove('show');
+  initAction.style.display = 'block';
   invokeBtn.disabled = false;
-
-  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // ========== 履歴管理 ==========
@@ -256,7 +236,6 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-// エラーをトーストで画面表示
 function showToast(msg, durationMs = 5000) {
   if (!debugToast) return;
   debugToast.textContent = msg;
