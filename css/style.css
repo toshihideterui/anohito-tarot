@@ -35,13 +35,13 @@ body {
 
 /* 初期状態：ボタン文字や星のない、カード無しの真っ新な背景 */
 .app.init-bg {
-  background: url('../images/bg_without_card.png?v=12') no-repeat center center;
+  background: url('../images/bg_without_card.png?v=13') no-repeat center center;
   background-size: cover;
 }
 
 /* 結果表示時：モックアップ本来の、ボタン枠や星枠が描かれた背景 */
 .app.result-bg {
-  background: url('../images/result_bg.png?v=12') no-repeat center center;
+  background: url('../images/result_bg.png?v=13') no-repeat center center;
   background-size: cover;
 }
 
@@ -204,10 +204,10 @@ body {
 /* ========== アクションボタン（背景画像に描かれたボタン枠に完璧に位置・サイズを合わせる） ========== */
 .action-container {
   position: absolute;
-  top: 82.6%;
+  top: 86.6%;
   left: 12%;
   width: 76%;
-  height: 8.0%;
+  height: 7.2%;
   z-index: 20;
   display: flex;
   align-items: center;
@@ -290,7 +290,7 @@ body {
 /* ========== 履歴リンク 位置を少し上に移動し、白文字に戻す ========== */
 .history-link-container {
   position: absolute;
-  top: 90.8%;
+  top: 93.8%;
   left: 0;
   width: 100%;
   text-align: center;
