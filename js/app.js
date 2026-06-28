@@ -27,6 +27,7 @@ const modalOverlay       = document.getElementById('modalOverlay');
 const modalClose         = document.getElementById('modalClose');
 const historyList        = document.getElementById('historyList');
 const debugToast         = document.getElementById('debugToast');
+const appContainer       = document.getElementById('appContainer');
 
 // ========== 状態変数 ==========
 let isFlipped   = false;
@@ -122,6 +123,12 @@ function showResult(card, isReversed, message) {
   // 星評価を設定
   starsRow.textContent = getStars(card, isReversed);
 
+  // 背景画像の切り替え
+  if (appContainer) {
+    appContainer.classList.remove('init-bg');
+    appContainer.classList.add('result-bg');
+  }
+
   // アクションボタンを切り替え
   initAction.style.display = 'none';
   resultExtras.classList.add('show');
@@ -200,6 +207,12 @@ function handleReset() {
   cardFlipper.classList.remove('flipped');
   cardScene.classList.remove('glow-anim');
   isFlipped = false;
+
+  // 背景を元に戻す
+  if (appContainer) {
+    appContainer.classList.remove('result-bg');
+    appContainer.classList.add('init-bg');
+  }
 
   resultExtras.classList.remove('show');
   initAction.style.display = 'block';
