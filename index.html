@@ -15,9 +15,9 @@
 <body>
 <canvas id="bgCanvas"></canvas>
 
-<!-- アプリ全体コンテナ（モックアップ背景を使用） -->
-<div class="app" id="appContainer">
-  <!-- ヘッダー（背景画像に含まれているため、初期状態でのみ表示するか非表示にする。今回は重ねる形で再現） -->
+<!-- アプリ全体コンテナ（初期状態では裏面全体の背景、結果時は表面全体の背景） -->
+<div class="app init-bg" id="appContainer">
+  <!-- ヘッダーは背景画像に含まれているため非表示 -->
   <div class="header" id="appHeader">
     <div class="header-en">TAROT READING</div>
     <div class="header-title">あの人の気持ち</div>
@@ -27,16 +27,16 @@
 
   <!-- 占いメインセクション -->
   <div class="main-section">
-    <!-- 3Dフリップカード（背景のカード位置にぴったり重ねる） -->
+    <!-- 3Dフリップカード（中央のカード枠のみが回転する） -->
     <div class="card-scene" id="cardScene">
       <div class="card-flipper" id="cardFlipper">
-        <!-- 表面：裏向き状態 -->
+        <!-- 表面：切り抜いたカード裏面 (二重枠にならない) -->
         <div class="card-face card-front" id="cardFrontFace">
-          <img src="images/card_back.png" alt="カードの裏面">
+          <img src="images/card_back_single.png" alt="カードの裏面">
         </div>
-        <!-- 裏面：引いたカードとメッセージ -->
+        <!-- 裏面：引いたカード表面 (例：card_fool.png) -->
         <div class="card-face card-back-face" id="cardBackFace">
-          <!-- 引いたタロットカードの絵（例：card_fool.png） -->
+          <!-- タロットカード（枠付き） -->
           <img id="cardBackImg" src="" alt="カード表面">
           <!-- その上に重ねる動的テキスト -->
           <div class="card-overlay-content">
@@ -51,7 +51,7 @@
       </div>
     </div>
 
-    <!-- 初期ボタン：カードを引く -->
+    <!-- 初期ボタン：カードの下部に配置 -->
     <div class="action-container" id="initAction">
       <button class="invoke-btn" id="invokeBtn">✦ カードを引く ✦</button>
       <!-- ローディング -->

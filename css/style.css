@@ -19,18 +19,30 @@ body {
   pointer-events: none;
 }
 
-/* ========== アプリコンテナ（巨大カードのアスペクト比固定） ========== */
+/* ========== アプリコンテナ ========== */
 .app {
   position: relative;
   z-index: 1;
   width: 100%;
   max-width: 440px;
-  /* タロットカード全体画像 (718x1070) のアスペクト比 */
+  /* アスペクト比をモックアップ画像に固定 */
   aspect-ratio: 718 / 1070;
   margin: 0 auto;
   box-shadow: 0 0 50px rgba(0, 0, 0, 0.9), 0 0 100px rgba(106, 26, 154, 0.3);
   overflow: hidden;
-  background: transparent;
+  transition: background-image 0.5s ease;
+}
+
+/* 初期状態の背景（ura.png 全体） */
+.app.init-bg {
+  background: url('../images/card_back.png') no-repeat center center;
+  background-size: cover;
+}
+
+/* 結果表示の背景（omote.png 全体） */
+.app.result-bg {
+  background: url('../images/result_bg.png') no-repeat center center;
+  background-size: cover;
 }
 
 #appHeader {
@@ -43,10 +55,13 @@ body {
   height: 100%;
 }
 
-/* ========== 巨大フリップカード (画面全体が1枚のカード) ========== */
+/* ========== 中央のカードのみを配置 ========== */
 .card-scene {
   position: absolute;
-  inset: 0;
+  top: 16.8%;
+  left: 23.2%;
+  width: 53.6%;
+  height: 58.2%;
   perspective: 1200px;
   cursor: pointer;
   z-index: 10;
@@ -67,11 +82,14 @@ body {
   position: absolute;
   inset: 0;
   backface-visibility: hidden;
+  border-radius: 12px;
   overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
 }
 
+/* 表面：切り抜いたカード裏面 (二重枠にならない) */
 .card-front {
-  background: #0d0520;
+  background: #110524;
 }
 .card-front img {
   width: 100%;
@@ -80,9 +98,10 @@ body {
   display: block;
 }
 
+/* 裏面：引いたカード表面 (例：card_fool.png) */
 .card-back-face {
   transform: rotateY(180deg);
-  background: #0d0520;
+  background: #110524;
   position: relative;
 }
 .card-back-face img {
@@ -92,54 +111,49 @@ body {
   display: block;
 }
 
-/* ========== カード表面（結果）に重ねる動的テキストの位置決め ========== */
+/* カードの絵柄の上に重ねる動的テキスト */
 .card-overlay-content {
   position: absolute;
   inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12% 8% 10%;
+  background: linear-gradient(to bottom, rgba(13, 5, 32, 0.55) 0%, rgba(13, 5, 32, 0.1) 40%, rgba(13, 5, 32, 0.8) 100%);
   pointer-events: none;
 }
 
-/* ― ○○の導き ― */
 .card-guide-title {
-  position: absolute;
-  top: 32.5%;
-  left: 0;
-  width: 100%;
-  text-align: center;
   font-size: 13px;
   font-weight: 400;
   color: #f0d080;
   letter-spacing: 2px;
   text-shadow: 0 0 10px rgba(240, 208, 128, 0.6);
+  text-align: center;
 }
 
-/* AIメッセージ */
 .card-main-message {
-  position: absolute;
-  top: 40%;
-  left: 10%;
-  width: 80%;
-  height: 16%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   font-size: 17px;
   font-weight: 700;
   line-height: 1.8;
   color: #ffffff;
   text-align: center;
   text-shadow: 0 2px 15px rgba(0, 0, 0, 0.95), 0 0 20px rgba(106, 26, 154, 0.8);
+  margin-top: 15%;
+  margin-bottom: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 45%;
 }
 
-/* カード英語名・日本語名 */
 .card-name-area {
-  position: absolute;
-  top: 68.5%;
-  left: 0;
-  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-top: auto;
+  width: 100%;
 }
 .card-name-en {
   font-family: 'Cinzel Decorative', cursive;
@@ -166,7 +180,6 @@ body {
   z-index: 20;
 }
 
-/* 初期状態のカードを引くボタン */
 .invoke-btn {
   width: 100%;
   height: 100%;
@@ -235,7 +248,6 @@ body {
   pointer-events: auto;
 }
 
-/* 恋愛運の星評価の位置合わせ */
 .love-fortune {
   position: absolute;
   top: 77.8%;
@@ -257,7 +269,6 @@ body {
   text-shadow: 0 0 8px rgba(240, 208, 128, 0.6);
 }
 
-/* もう一度占うボタン（モックアップ画像のボタン枠に完全に重ねる） */
 .again-btn {
   position: absolute;
   top: 85.5%;
@@ -277,7 +288,6 @@ body {
   text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
 }
 
-/* 履歴リンク */
 .history-link {
   position: absolute;
   top: 93.5%;
