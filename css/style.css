@@ -35,13 +35,13 @@ body {
 
 /* 初期状態：ボタン文字や星のない、カード無しの真っ新な背景 */
 .app.init-bg {
-  background: url('../images/bg_without_card.png?v=8') no-repeat center center;
+  background: url('../images/bg_without_card.png?v=9') no-repeat center center;
   background-size: cover;
 }
 
 /* 結果表示時：モックアップ本来の、ボタン枠や星枠が描かれた背景 */
 .app.result-bg {
-  background: url('../images/result_bg.png?v=8') no-repeat center center;
+  background: url('../images/result_bg.png?v=9') no-repeat center center;
   background-size: cover;
 }
 
@@ -312,4 +312,88 @@ body {
 .history-link:hover {
   color: #c9a84c;
   text-shadow: 0 0 8px rgba(201, 168, 76, 0.6);
+}
+
+/* ========== カードの光アニメーション ========== */
+@keyframes cardGlow {
+  0% { box-shadow: 0 0 15px rgba(201, 168, 76, 0.2); }
+  50% { box-shadow: 0 0 45px rgba(201, 168, 76, 0.6), 0 0 80px rgba(106, 26, 154, 0.4); }
+  100% { box-shadow: 0 0 15px rgba(201, 168, 76, 0.2); }
+}
+.glow-anim {
+  animation: cardGlow 1.8s ease-in-out infinite;
+}
+
+/* ========== 履歴モーダル（飛び出し防止対応） ========== */
+.modal-overlay {
+  display: none !important;
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 2, 15, 0.9);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal-overlay.show {
+  display: flex !important;
+}
+.modal {
+  background: linear-gradient(160deg, #180633, #0d031c);
+  border: 1px solid rgba(201, 168, 76, 0.4);
+  border-radius: 12px;
+  padding: 22px 20px;
+  width: 100%;
+  max-width: 380px;
+  max-height: 75vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+}
+.modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  border-bottom: 1px solid rgba(201, 168, 76, 0.2);
+  padding-bottom: 10px;
+}
+.modal-title {
+  font-size: 13px;
+  letter-spacing: 2px;
+  color: #c9a84c;
+}
+.modal-close {
+  background: none;
+  border: none;
+  color: #7a7060;
+  font-size: 18px;
+  cursor: pointer;
+}
+.history-item {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 10px 0;
+}
+.history-item:last-child {
+  border-bottom: none;
+}
+.history-date {
+  font-size: 10px;
+  color: #7a6230;
+  margin-bottom: 3px;
+}
+.history-card {
+  font-size: 11px;
+  color: #c9a84c;
+  margin-bottom: 3px;
+}
+.history-msg {
+  font-size: 12px;
+  color: #e8dcc0;
+  line-height: 1.6;
+}
+.history-empty {
+  text-align: center;
+  color: #7a7060;
+  font-size: 12px;
+  padding: 30px 0;
 }
