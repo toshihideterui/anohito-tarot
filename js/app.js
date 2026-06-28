@@ -9,6 +9,7 @@
 
 // ========== DOM要素 ==========
 const invokeBtn          = document.getElementById('invokeBtn');
+const againBtn           = document.getElementById('againBtn');
 const initAction         = document.getElementById('initAction');
 const cardScene          = document.getElementById('cardScene');
 const cardFlipper        = document.getElementById('cardFlipper');
@@ -19,15 +20,13 @@ const cardNameEn         = document.getElementById('cardNameEn');
 const cardNameJa         = document.getElementById('cardNameJa');
 const loadingInline      = document.getElementById('loadingInline');
 const loadingText        = document.getElementById('loadingText');
-const resultExtras       = document.getElementById('resultExtras');
+const loveFortune        = document.getElementById('loveFortune');
 const starsRow           = document.getElementById('starsRow');
-const againBtn           = document.getElementById('againBtn');
 const historyLink        = document.getElementById('historyLink');
 const modalOverlay       = document.getElementById('modalOverlay');
 const modalClose         = document.getElementById('modalClose');
 const historyList        = document.getElementById('historyList');
 const debugToast         = document.getElementById('debugToast');
-const appContainer       = document.getElementById('appContainer');
 
 // ========== 状態変数 ==========
 let isFlipped   = false;
@@ -93,7 +92,7 @@ function loadCardImage(imgEl, src) {
       resolve();
     };
     img.onerror = () => {
-      imgEl.src = 'images/cards/card_moon.png'; // 最悪の場合MOON画像にフォールバック
+      imgEl.src = 'images/cards/card_moon.png';
       resolve();
     };
     img.src = src;
@@ -120,18 +119,15 @@ function showResult(card, isReversed, message) {
   cardNameEn.textContent = card.en;
   cardNameJa.textContent = isReversed ? `${card.ja} (逆位置)` : card.ja;
 
-  // 星評価を設定
+  // 星評価を設定してフェードイン
   starsRow.textContent = getStars(card, isReversed);
-
-  // 背景画像の切り替え
-  if (appContainer) {
-    appContainer.classList.remove('init-bg');
-    appContainer.classList.add('result-bg');
+  if (loveFortune) {
+    loveFortune.classList.add('show');
   }
 
   // アクションボタンを切り替え
-  initAction.style.display = 'none';
-  resultExtras.classList.add('show');
+  invokeBtn.style.display = 'none';
+  againBtn.style.display = 'flex';
 }
 
 // ========== Gemini API 呼び出し ==========
@@ -158,13 +154,12 @@ async function fetchMessage(card, isReversed) {
 メッセージのみを出力してください（前置きや説明は不要）。
 `.trim();
 
-  // リトライ設定（429対策：無料枠のRPM制限を考慮して間隔を長めにする）
-  const MAX_RETRIES = 1; // リトライは1回のみにしてAPI負荷を下げる
+  const MAX_RETRIES = 1;
   for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
     try {
       if (attempt > 0) {
         if (loadingText) loadingText.textContent = `星に再び問いかけています… (少し時間をおいています)`;
-        await sleep(4000); // 4秒待ってから再試行
+        await sleep(4000);
       }
 
       const response = await fetch(
@@ -181,7 +176,6 @@ async function fetchMessage(card, isReversed) {
 
       if (response.status === 429) {
         if (attempt < MAX_RETRIES) continue;
-        // 2回とも429なら即座にデフォルトメッセージで対応
         console.warn('Gemini API: レート制限のためデフォルトメッセージに切り替えます');
         return getCardMessage(card, isReversed);
       }
@@ -208,14 +202,14 @@ function handleReset() {
   cardScene.classList.remove('glow-anim');
   isFlipped = false;
 
-  // 背景を元に戻す
-  if (appContainer) {
-    appContainer.classList.remove('result-bg');
-    appContainer.classList.add('init-bg');
+  // 星評価を非表示
+  if (loveFortune) {
+    loveFortune.classList.remove('show');
   }
 
-  resultExtras.classList.remove('show');
-  initAction.style.display = 'block';
+  // ボタン表示を元に戻す
+  againBtn.style.display = 'none';
+  invokeBtn.style.display = 'flex';
   invokeBtn.disabled = false;
 }
 

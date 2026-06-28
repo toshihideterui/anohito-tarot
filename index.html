@@ -15,14 +15,14 @@
 <body>
 <canvas id="bgCanvas"></canvas>
 
-<!-- アプリ全体コンテナ（カード無しの固定背景を使用） -->
-<div class="app init-bg" id="appContainer">
+<!-- アプリ全体コンテナ（カードとボタン・星が消去された綺麗な固定背景） -->
+<div class="app" id="appContainer">
   <!-- 占いメインセクション -->
   <div class="main-section">
-    <!-- 3Dフリップカード（中央のカード枠のみが回転する） -->
+    <!-- 3Dフリップカード（中央のカード枠のみが回転する。二重枠を解消） -->
     <div class="card-scene" id="cardScene">
       <div class="card-flipper" id="cardFlipper">
-        <!-- 表面：切り抜いたカード裏面 (単体画像) -->
+        <!-- 表面：切り抜いた正しいカード裏面 (omote.pngから切り出したもの) -->
         <div class="card-face card-front" id="cardFrontFace">
           <img src="images/card_back_single.png?v=5" alt="カードの裏面">
         </div>
@@ -43,9 +43,17 @@
       </div>
     </div>
 
-    <!-- 初期ボタン：カードの下部に配置 -->
-    <div class="action-container" id="initAction">
-      <button class="invoke-btn" id="invokeBtn">カードを引く</button>
+    <!-- 今日の恋愛運（星評価。初期状態では非表示） -->
+    <div class="love-fortune" id="loveFortune">
+      <div class="love-label">今日の恋愛運</div>
+      <div class="stars-row" id="starsRow">★★★★☆</div>
+    </div>
+
+    <!-- アクションボタンコンテナ（HTML/CSSで美しいボタンを1から作成） -->
+    <div class="action-container" id="actionContainer">
+      <button class="tarot-btn" id="invokeBtn">カードを引く</button>
+      <button class="tarot-btn again-btn" id="againBtn">もう一度占う</button>
+      
       <!-- ローディング -->
       <div class="loading-inline" id="loadingInline">
         <div class="orb"></div>
@@ -53,13 +61,8 @@
       </div>
     </div>
 
-    <!-- 結果追加要素（占い後にフェードイン） -->
-    <div class="result-extras" id="resultExtras">
-      <div class="love-fortune">
-        <div class="love-label">今日の恋愛運</div>
-        <div class="stars-row" id="starsRow">★★★★☆</div>
-      </div>
-      <button class="again-btn" id="againBtn">もう一度占う</button>
+    <!-- 履歴表示リンク（初期状態でも結果表示時でも常に下部に配置） -->
+    <div class="history-link-container">
       <span class="history-link" id="historyLink">鑑定履歴を見る ＞</span>
     </div>
   </div>
