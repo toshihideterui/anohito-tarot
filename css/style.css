@@ -30,19 +30,18 @@ body {
   margin: 0 auto;
   box-shadow: 0 0 50px rgba(0, 0, 0, 0.9), 0 0 100px rgba(106, 26, 154, 0.3);
   overflow: hidden;
-  /* 文字・星・カードが完全に消去された固定背景 */
-  background: url('../images/bg_without_card.png?v=7') no-repeat center center;
-  background-size: cover;
+  transition: background-image 0.4s ease;
 }
 
+/* 初期状態：ボタン文字や星のない、カード無しの真っ新な背景 */
 .app.init-bg {
-  background: url('../images/bg_without_card.png?v=7') no-repeat center center;
+  background: url('../images/bg_without_card.png?v=8') no-repeat center center;
   background-size: cover;
 }
 
 /* 結果表示時：モックアップ本来の、ボタン枠や星枠が描かれた背景 */
 .app.result-bg {
-  background: url('../images/result_bg.png?v=7') no-repeat center center;
+  background: url('../images/result_bg.png?v=8') no-repeat center center;
   background-size: cover;
 }
 
@@ -172,10 +171,10 @@ body {
   letter-spacing: 2px;
 }
 
-/* ========== 星評価（今日の恋愛運） ========== */
+/* ========== 星評価（今日の恋愛運）位置を少し上に移動 ========== */
 .love-fortune {
   position: absolute;
-  top: 77.8%;
+  top: 76.2%;
   left: 0;
   width: 100%;
   text-align: center;
@@ -202,13 +201,13 @@ body {
   text-shadow: 0 0 8px rgba(240, 208, 128, 0.6);
 }
 
-/* ========== アクションボタン（HTML/CSSによる美しいオリジナルボタン） ========== */
+/* ========== アクションボタン（モックアップに極限まで近づけた高品質ボタン）位置を少し上に移動 ========== */
 .action-container {
   position: absolute;
-  top: 85.0%;
+  top: 83.2%;
   left: 12%;
   width: 76%;
-  height: 7%;
+  height: 6.2%;
   z-index: 20;
   display: flex;
   align-items: center;
@@ -218,26 +217,33 @@ body {
 .tarot-btn {
   width: 100%;
   height: 100%;
-  background: linear-gradient(to bottom, #431275, #220644);
-  border: 1px solid #c9a84c;
-  border-radius: 30px;
+  /* モックアップ準拠の横方向グラデーション */
+  background: linear-gradient(to right, #5c188f 0%, #1e053a 100%);
+  border: 1.5px solid #c9a84c;
+  border-radius: 25px;
   color: #ffffff;
   font-family: inherit;
   font-size: 15px;
-  font-weight: 400;
+  font-weight: 300;
   letter-spacing: 4px;
   cursor: pointer;
   outline: none;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6), inset 0 1px 2px rgba(255, 255, 255, 0.1);
+  /* 金色の光沢を放つ内側シャドウを追加 */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6), 
+              inset 0 0 8px rgba(201, 168, 76, 0.6),
+              0 0 10px rgba(106, 26, 154, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .tarot-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7), 0 0 10px rgba(201, 168, 76, 0.4);
   border-color: #f0d080;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7), 
+              inset 0 0 12px rgba(240, 208, 128, 0.9),
+              0 0 20px rgba(106, 26, 154, 0.5);
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
 }
 .tarot-btn:active {
   transform: translateY(1px);
@@ -284,106 +290,26 @@ body {
   text-shadow: 0 1px 3px rgba(0,0,0,0.8);
 }
 
-/* ========== 履歴リンク ========== */
+/* ========== 履歴リンク 位置を少し上に移動し、白文字に戻す ========== */
 .history-link-container {
   position: absolute;
-  top: 93.5%;
+  top: 90.8%;
   left: 0;
   width: 100%;
   text-align: center;
   z-index: 20;
 }
 .history-link {
-  color: transparent;
+  color: #7a7060;
   font-size: 11px;
   letter-spacing: 2px;
   cursor: pointer;
-  transition: color 0.3s;
+  display: inline-block;
+  padding: 5px 20px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+  transition: color 0.3s ease, text-shadow 0.3s ease;
 }
 .history-link:hover {
   color: #c9a84c;
-}
-
-/* ========== カードの光アニメーション ========== */
-@keyframes cardGlow {
-  0% { box-shadow: 0 0 15px rgba(201, 168, 76, 0.2); }
-  50% { box-shadow: 0 0 45px rgba(201, 168, 76, 0.6), 0 0 80px rgba(106, 26, 154, 0.4); }
-  100% { box-shadow: 0 0 15px rgba(201, 168, 76, 0.2); }
-}
-.glow-anim {
-  animation: cardGlow 1.8s ease-in-out infinite;
-}
-
-/* ========== 履歴モーダル ========== */
-.modal-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(5, 2, 15, 0.9);
-  z-index: 200;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-.modal-overlay.show {
-  display: flex;
-}
-.modal {
-  background: linear-gradient(160deg, #180633, #0d031c);
-  border: 1px solid rgba(201, 168, 76, 0.4);
-  border-radius: 12px;
-  padding: 22px 20px;
-  width: 100%;
-  max-width: 380px;
-  max-height: 75vh;
-  overflow-y: auto;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-}
-.modal-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 15px;
-  border-bottom: 1px solid rgba(201, 168, 76, 0.2);
-  padding-bottom: 10px;
-}
-.modal-title {
-  font-size: 13px;
-  letter-spacing: 2px;
-  color: #c9a84c;
-}
-.modal-close {
-  background: none;
-  border: none;
-  color: #7a7060;
-  font-size: 18px;
-  cursor: pointer;
-}
-.history-item {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  padding: 10px 0;
-}
-.history-item:last-child {
-  border-bottom: none;
-}
-.history-date {
-  font-size: 10px;
-  color: #7a6230;
-  margin-bottom: 3px;
-}
-.history-card {
-  font-size: 11px;
-  color: #c9a84c;
-  margin-bottom: 3px;
-}
-.history-msg {
-  font-size: 12px;
-  color: #e8dcc0;
-  line-height: 1.6;
-}
-.history-empty {
-  text-align: center;
-  color: #7a7060;
-  font-size: 12px;
-  padding: 30px 0;
+  text-shadow: 0 0 8px rgba(201, 168, 76, 0.6);
 }
