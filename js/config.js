@@ -8,7 +8,7 @@
 
 const CONFIG = {
   // ✅ ここに Gemini API キーを入力してください
-  GEMINI_API_KEY: 'YOUR_GEMINI_API_KEY_HERE',
+  GEMINI_API_KEY: 'AIzaSyAfWTTdUVvEv5eHfyNvtP5E5pNpZW9_0n0',
 
   // Gemini API エンドポイント
   GEMINI_API_URL: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent',
