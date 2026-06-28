@@ -19,7 +19,7 @@ body {
   pointer-events: none;
 }
 
-/* ========== アプリコンテナ ========== */
+/* ========== アプリコンテナ（カード無しの固定背景） ========== */
 .app {
   position: relative;
   z-index: 1;
@@ -30,18 +30,8 @@ body {
   margin: 0 auto;
   box-shadow: 0 0 50px rgba(0, 0, 0, 0.9), 0 0 100px rgba(106, 26, 154, 0.3);
   overflow: hidden;
-  transition: background-image 0.5s ease;
-}
-
-/* 初期状態の背景（ura.png 全体） */
-.app.init-bg {
-  background: url('../images/card_back.png') no-repeat center center;
-  background-size: cover;
-}
-
-/* 結果表示の背景（omote.png 全体） */
-.app.result-bg {
-  background: url('../images/result_bg.png') no-repeat center center;
+  /* カード無しの固定背景画像を常時適用 */
+  background: url('../images/bg_without_card.png') no-repeat center center;
   background-size: cover;
 }
 

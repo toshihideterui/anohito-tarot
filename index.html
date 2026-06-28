@@ -15,22 +15,14 @@
 <body>
 <canvas id="bgCanvas"></canvas>
 
-<!-- アプリ全体コンテナ（初期状態では裏面全体の背景、結果時は表面全体の背景） -->
-<div class="app init-bg" id="appContainer">
-  <!-- ヘッダーは背景画像に含まれているため非表示 -->
-  <div class="header" id="appHeader">
-    <div class="header-en">TAROT READING</div>
-    <div class="header-title">あの人の気持ち</div>
-    <div class="gold-divider"><span>✦</span></div>
-    <div class="header-sub">タロットカードがあなたに伝えたいこと</div>
-  </div>
-
+<!-- アプリ全体コンテナ（カード無しの固定背景を使用） -->
+<div class="app" id="appContainer">
   <!-- 占いメインセクション -->
   <div class="main-section">
     <!-- 3Dフリップカード（中央のカード枠のみが回転する） -->
     <div class="card-scene" id="cardScene">
       <div class="card-flipper" id="cardFlipper">
-        <!-- 表面：切り抜いたカード裏面 (二重枠にならない) -->
+        <!-- 表面：切り抜いたカード裏面 (単体画像) -->
         <div class="card-face card-front" id="cardFrontFace">
           <img src="images/card_back_single.png" alt="カードの裏面">
         </div>
