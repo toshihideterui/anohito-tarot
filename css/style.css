@@ -51,10 +51,10 @@ body {
 /* ========== カードの配置（背景のカード枠に完全一致） ========== */
 .card-scene {
   position: absolute;
-  top: 17.2%;
-  left: 23.8%;
-  width: 52.4%;
-  height: 57.3%;
+  top: 16.8%;
+  left: 23.2%;
+  width: 53.6%;
+  height: 58.2%;
   perspective: 1200px;
   cursor: pointer;
   z-index: 10;
