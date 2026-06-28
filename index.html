@@ -52,10 +52,19 @@
       <!-- ローディング -->
       <div class="loading-inline" id="loadingInline">
         <div class="orb"></div>
-        <div class="lt">星に問いかけています…</div>
+        <div class="lt" id="loadingText">星に問いかけています…</div>
       </div>
     </div>
   </div>
+
+  <!-- エラー確認用トースト -->
+  <div id="debugToast" style="
+    display:none; position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+    background:rgba(60,20,80,0.97); color:#f0d080; padding:14px 20px;
+    border:1px solid rgba(201,168,76,0.5); border-radius:8px;
+    font-size:12px; max-width:320px; text-align:center;
+    z-index:9999; word-break:break-all; line-height:1.8;
+  "></div>
 
   <!-- 結果エリア -->
   <div class="result-area" id="resultArea">

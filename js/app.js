@@ -14,7 +14,7 @@ const cardScene          = document.getElementById('cardScene');
 const cardFlipper        = document.getElementById('cardFlipper');
 const cardBackImg        = document.getElementById('cardBackImg');
 const loadingInline      = document.getElementById('loadingInline');
-const loadingText        = document.querySelector('.loading-inline .lt');
+const loadingText        = document.getElementById('loadingText');
 const resultArea         = document.getElementById('resultArea');
 const resultMessage      = document.getElementById('resultMessage');
 const resultArcanaVisual = document.getElementById('resultArcanaVisual');
@@ -29,6 +29,7 @@ const modalOverlay       = document.getElementById('modalOverlay');
 const modalClose         = document.getElementById('modalClose');
 const historyList        = document.getElementById('historyList');
 const storesBtn          = document.getElementById('storesBtn');
+const debugToast         = document.getElementById('debugToast');
 
 // ========== 状態変数 ==========
 let isFlipped   = false;
@@ -182,13 +183,14 @@ async function fetchMessage(card, isReversed) {
       );
 
       if (response.status === 429) {
-        if (attempt < MAX_RETRIES) continue; // リトライ
-        // リトライ上限 → デフォルトメッセージにフォールバック
+        if (attempt < MAX_RETRIES) continue;
+        showToast('⚠️ APIレート制限中\nしばらく待ってから再度お試しください');
         console.warn('Gemini API: レート制限のためデフォルトメッセージを使用します');
         return getCardMessage(card, isReversed);
       }
 
       if (!response.ok) {
+        showToast(`⚠️ API エラー: ${response.status}\n内容: ${await response.text().then(t=>t.slice(0,80))}`);
         throw new Error(`API Error: ${response.status}`);
       }
 
@@ -252,6 +254,17 @@ function closeHistory() {
 // ========== ユーティリティ ==========
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// エラーをトーストで画面表示
+function showToast(msg, durationMs = 5000) {
+  if (!debugToast) return;
+  debugToast.textContent = msg;
+  debugToast.style.display = 'block';
+  clearTimeout(debugToast._timer);
+  debugToast._timer = setTimeout(() => {
+    debugToast.style.display = 'none';
+  }, durationMs);
 }
 
 // ========== 起動 ==========
