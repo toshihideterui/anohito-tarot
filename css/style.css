@@ -217,10 +217,10 @@ body {
 .tarot-btn {
   width: 100%;
   height: 100%;
-  /* モックアップ準拠の横方向グラデーション */
-  background: linear-gradient(to right, #5c188f 0%, #1e053a 100%);
-  border: 1.5px solid #c9a84c;
-  border-radius: 25px;
+  /* モックアップそっくりのボタン画像を背景に指定 */
+  background: url('../images/btn_bg.png?v=9') no-repeat center center;
+  background-size: 100% 100%;
+  border: none;
   color: #ffffff;
   font-family: inherit;
   font-size: 15px;
@@ -228,21 +228,20 @@ body {
   letter-spacing: 4px;
   cursor: pointer;
   outline: none;
-  /* 金色の光沢を放つ内側シャドウを追加 */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6), 
-              inset 0 0 8px rgba(201, 168, 76, 0.6),
-              0 0 10px rgba(106, 26, 154, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  /* ホバー時に光る効果 */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4), 
+              0 0 10px rgba(106, 26, 154, 0.2);
+  transition: all 0.3s ease;
 }
 .tarot-btn:hover {
   transform: translateY(-1px);
-  border-color: #f0d080;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7), 
-              inset 0 0 12px rgba(240, 208, 128, 0.9),
-              0 0 20px rgba(106, 26, 154, 0.5);
+  filter: brightness(1.18);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6), 
+              0 0 15px rgba(201, 168, 76, 0.4),
+              0 0 20px rgba(106, 26, 154, 0.4);
   text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
 }
 .tarot-btn:active {
