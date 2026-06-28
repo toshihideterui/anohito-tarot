@@ -35,13 +35,13 @@ body {
 
 /* 初期状態：ボタン文字や星のない、カード無しの真っ新な背景 */
 .app.init-bg {
-  background: url('../images/bg_without_card.png?v=4') no-repeat center center;
+  background: url('../images/bg_without_card.png?v=5') no-repeat center center;
   background-size: cover;
 }
 
 /* 結果表示時：モックアップ本来の、ボタン枠や星枠が描かれた背景 */
 .app.result-bg {
-  background: url('../images/result_bg.png?v=4') no-repeat center center;
+  background: url('../images/result_bg.png?v=5') no-repeat center center;
   background-size: cover;
 }
 
@@ -180,6 +180,7 @@ body {
   z-index: 20;
 }
 
+/* 初期状態のカードを引くボタン */
 .invoke-btn {
   width: 100%;
   height: 100%;
@@ -188,11 +189,9 @@ body {
   color: #ffffff;
   font-family: inherit;
   font-size: 15px;
-  font-weight: 700;
-  letter-spacing: 4px;
+  letter-spacing: 3px;
   cursor: pointer;
   outline: none;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
   transition: text-shadow 0.3s ease;
 }
 .invoke-btn:hover {
