@@ -14,6 +14,7 @@ const cardScene          = document.getElementById('cardScene');
 const cardFlipper        = document.getElementById('cardFlipper');
 const cardBackImg        = document.getElementById('cardBackImg');
 const loadingInline      = document.getElementById('loadingInline');
+const loadingText        = document.querySelector('.loading-inline .lt');
 const resultArea         = document.getElementById('resultArea');
 const resultMessage      = document.getElementById('resultMessage');
 const resultArcanaVisual = document.getElementById('resultArcanaVisual');
@@ -159,26 +160,49 @@ async function fetchMessage(card, isReversed) {
 メッセージのみを出力してください（前置きや説明は不要）。
 `.trim();
 
-  try {
-    const response = await fetch(
-      `${CONFIG.GEMINI_API_URL}?key=${CONFIG.GEMINI_API_KEY}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { temperature: 0.9, maxOutputTokens: 200 },
-        }),
+  // リトライ設定（429対策）
+  const MAX_RETRIES = 2;
+  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      if (attempt > 0) {
+        if (loadingText) loadingText.textContent = `星に再び問いかけています… (${attempt}/${MAX_RETRIES})`;
+        await sleep(2000 * attempt); // 待機時間を増やしてリトライ
       }
-    );
-    if (!response.ok) throw new Error(`API Error: ${response.status}`);
-    const data = await response.json();
-    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-    return text ? text.trim() : getCardMessage(card, isReversed);
-  } catch (err) {
-    console.warn('Gemini API エラー。デフォルトメッセージを使用します。', err);
-    return getCardMessage(card, isReversed);
+
+      const response = await fetch(
+        `${CONFIG.GEMINI_API_URL}?key=${CONFIG.GEMINI_API_KEY}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { temperature: 0.9, maxOutputTokens: 200 },
+          }),
+        }
+      );
+
+      if (response.status === 429) {
+        if (attempt < MAX_RETRIES) continue; // リトライ
+        // リトライ上限 → デフォルトメッセージにフォールバック
+        console.warn('Gemini API: レート制限のためデフォルトメッセージを使用します');
+        return getCardMessage(card, isReversed);
+      }
+
+      if (!response.ok) {
+        throw new Error(`API Error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+      return text ? text.trim() : getCardMessage(card, isReversed);
+
+    } catch (err) {
+      if (attempt < MAX_RETRIES) continue;
+      console.warn('Gemini API エラー。デフォルトメッセージを使用します。', err);
+      return getCardMessage(card, isReversed);
+    }
   }
+  return getCardMessage(card, isReversed);
 }
 
 // ========== リセット ==========
