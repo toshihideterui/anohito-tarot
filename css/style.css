@@ -35,13 +35,13 @@ body {
 
 /* 初期状態：ボタン文字や星のない、カード無しの真っ新な背景 */
 .app.init-bg {
-  background: url('../images/bg_without_card.png?v=16') no-repeat center center;
+  background: url('../images/bg_without_card.png?v=17') no-repeat center center;
   background-size: cover;
 }
 
 /* 結果表示時：モックアップ本来の、ボタン枠や星枠が描かれた背景 */
 .app.result-bg {
-  background: url('../images/result_bg.png?v=16') no-repeat center center;
+  background: url('../images/result_bg.png?v=17') no-repeat center center;
   background-size: cover;
 }
 
@@ -201,7 +201,7 @@ body {
   text-shadow: 0 0 8px rgba(240, 208, 128, 0.6);
 }
 
-/* ========== アクションボタン（背景のボタン枠を完全消去した美しい星空に、唐草装飾入りの本物のボタン画像を配置） ========== */
+/* ========== アクションボタン（左右完全半円のカプセル型ゴールド細枠ボタン） ========== */
 .action-container {
   position: absolute;
   top: 83.2%;
@@ -217,12 +217,14 @@ body {
 .tarot-btn {
   width: 100%;
   height: 100%;
-  /* 唐草装飾入りの美しいオリジナルボタン画像を背景に指定 */
-  background: url('../images/btn_bg.png?v=16') no-repeat center center;
-  background-size: 100% 100%;
-  border: none !important;
-  box-shadow: none !important;
-  color: #ffffff;
+  /* 左右完全半円のカプセル型 */
+  border-radius: 100vh !important;
+  /* 上品な細い金枠 */
+  border: 1.2px solid #c9a84c !important;
+  /* 美しい紫グラデーション */
+  background: linear-gradient(to right, #4c1182 0%, #1a0433 100%) !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6) !important;
+  color: #ffffff !important;
   font-family: inherit;
   font-size: 15px;
   font-weight: 300;
@@ -232,13 +234,13 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* ホバー時などの微細なアニメーション */
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .tarot-btn:hover {
   transform: translateY(-1px);
-  filter: brightness(1.18);
-  text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+  border-color: #f0d080 !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7), 0 0 10px rgba(201, 168, 76, 0.3) !important;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
 }
 .tarot-btn:active {
   transform: translateY(1px);
