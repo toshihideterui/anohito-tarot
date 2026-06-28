@@ -1,0 +1,13 @@
+# Gemini API キーをコミットしないように注意
+# config.js は公開リポジトリの場合、APIキーの扱いに注意してください
+
+# OS
+.DS_Store
+Thumbs.db
+
+# エディタ
+.vscode/
+*.swp
+
+# ログ
+*.log

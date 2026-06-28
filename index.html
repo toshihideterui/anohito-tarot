@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="タロットカードがあなたの恋の悩みに答えます。あの人の気持ちを占う無料タロット鑑定。">
+<meta name="theme-color" content="#0d0520">
+<meta property="og:title" content="あの人の気持ち鑑定｜タロット占い">
+<meta property="og:description" content="タロットカードがあなたの恋の悩みに答えます。">
+<meta property="og:type" content="website">
+<title>あの人の気持ち鑑定｜タロット占い</title>
+<link rel="stylesheet" href="css/style.css">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200;300;400;700&family=Cinzel+Decorative:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<canvas id="bgCanvas"></canvas>
+
+<div class="app">
+  <!-- ヘッダー -->
+  <div class="header">
+    <div class="header-en">TAROT READING</div>
+    <div class="header-title">あの人の気持ち</div>
+    <div class="gold-divider"><span>✦</span></div>
+    <div class="header-sub">タロットカードがあなたに伝えたいこと</div>
+  </div>
+
+  <!-- フォーム＋カード -->
+  <div id="formSection">
+    <div class="form-box">
+      <div class="c-bl"></div><div class="c-br"></div>
+
+      <div class="field">
+        <label>✦ あなたのお名前</label>
+        <input type="text" id="userName" placeholder="例：さくら">
+      </div>
+      <div class="field">
+        <label>✦ 気になるあの人のお名前</label>
+        <input type="text" id="targetName" placeholder="例：たかし">
+      </div>
+
+      <!-- カード（フォーム内） -->
+      <div class="form-card-wrap">
+        <div class="card-hint" id="cardHint">✦ カードをクリックして引く ✦</div>
+        <div class="card-scene" id="cardScene">
+          <div class="card-flipper" id="cardFlipper">
+            <!-- 表面：裏向き状態 -->
+            <div class="card-face card-front" id="cardFrontFace">
+              <!-- カード裏面デザイン（JavaScript で描画） -->
+            </div>
+            <!-- 裏面：カード内容 -->
+            <div class="card-face card-back-face" id="cardBackFace">
+              <span class="cb-moon">🌙</span>
+              <div class="cb-msg-area">
+                <div class="cb-msg" id="cbMsg">カードを引いて<br>運命を知りましょう</div>
+              </div>
+              <div class="cb-arcana" id="cbArcana">
+                <div class="cb-arcana-emoji" id="cbArcanaEmoji"></div>
+                <div class="cb-arcana-en" id="cbArcanaEn"></div>
+                <div class="cb-arcana-ja" id="cbArcanaJa"></div>
+              </div>
+              <div class="cb-guide">✦ THE ORACLE ✦</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button class="invoke-btn" id="invokeBtn">✦ カードを引く ✦</button>
+
+      <!-- ローディング -->
+      <div class="loading-inline" id="loadingInline">
+        <div class="orb"></div>
+        <div class="lt">星に問いかけています…</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 結果エリア -->
+  <div class="result-area" id="resultArea">
+    <div class="result-box">
+      <div class="result-moon-top">
+        <span class="result-moon-icon">🌙</span>
+        <span class="result-guide-label">✦ THE ORACLE ✦</span>
+      </div>
+
+      <div class="result-message-area">
+        <div class="result-message" id="resultMessage"></div>
+      </div>
+
+      <div class="result-arcana" id="resultArcana">
+        <div class="result-arcana-visual" id="resultArcanaVisual"></div>
+        <div class="result-arcana-info">
+          <div class="reversed-badge" id="reversedBadge" style="display:none">逆位置</div>
+          <div class="result-arcana-en" id="resultArcanaEn"></div>
+          <div class="result-arcana-ja" id="resultArcanaJa"></div>
+        </div>
+      </div>
+
+      <div class="love-fortune">
+        <div class="love-label">縁の強さ</div>
+        <div class="stars-row" id="starsRow"></div>
+      </div>
+    </div>
+
+    <button class="again-btn" id="againBtn">✦ もう一度占う ✦</button>
+    <span class="history-link" id="historyLink">▸ 過去の鑑定を見る</span>
+
+    <!-- STORESバナー -->
+    <div class="stores-banner">
+      <p>さらに詳しい鑑定・個人セッションは<br>こちらからご予約いただけます。</p>
+      <a href="#" class="stores-btn" id="storesBtn">詳しい鑑定を予約する</a>
+    </div>
+  </div>
+</div>
+
+<!-- 履歴モーダル -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-head">
+      <span class="modal-title">✦ 過去の鑑定記録</span>
+      <button class="modal-close" id="modalClose">✕</button>
+    </div>
+    <div id="historyList"></div>
+  </div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/tarot.js"></script>
+<script src="js/canvas.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
