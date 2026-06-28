@@ -145,12 +145,13 @@ async function fetchMessage(card, isReversed) {
 メッセージのみを出力してください（前置きや説明は不要）。
 `.trim();
 
-  const MAX_RETRIES = 2;
+  // リトライ設定（429対策：無料枠のRPM制限を考慮して間隔を長めにする）
+  const MAX_RETRIES = 1; // リトライは1回のみにしてAPI負荷を下げる
   for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
     try {
       if (attempt > 0) {
-        if (loadingText) loadingText.textContent = `星に再び問いかけています… (${attempt}/${MAX_RETRIES})`;
-        await sleep(2000 * attempt);
+        if (loadingText) loadingText.textContent = `星に再び問いかけています… (少し時間をおいています)`;
+        await sleep(4000); // 4秒待ってから再試行
       }
 
       const response = await fetch(
@@ -167,12 +168,12 @@ async function fetchMessage(card, isReversed) {
 
       if (response.status === 429) {
         if (attempt < MAX_RETRIES) continue;
-        showToast('⚠️ APIレート制限中\nしばらく待ってから再度お試しください');
+        // 2回とも429なら即座にデフォルトメッセージで対応
+        console.warn('Gemini API: レート制限のためデフォルトメッセージに切り替えます');
         return getCardMessage(card, isReversed);
       }
 
       if (!response.ok) {
-        showToast(`⚠️ API エラー: ${response.status}`);
         throw new Error(`API Error: ${response.status}`);
       }
 
