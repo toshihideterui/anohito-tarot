@@ -13,8 +13,8 @@ const CONFIG = {
   // Gemini API エンドポイント
   GEMINI_API_URL: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent',
 
-  // STORESの予約ページURL（変更してください）
-  STORES_URL: 'https://your-stores-page.stores.jp',
+  // STORESの予約ページURL
+  STORES_URL: 'https://mfji1wtifttuhkyxhpye.stores.jp',
 
   // 占い結果の最大保存件数
   MAX_HISTORY: 20,

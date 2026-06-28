@@ -2,56 +2,47 @@
  * app.js
  * -----------------------------------
  * メインアプリケーションロジック
- * - カード引き
+ * - カード引き（入力不要）
  * - Gemini API 呼び出し
  * - 履歴管理（localStorage）
  * -----------------------------------
  */
 
 // ========== DOM要素 ==========
-const invokeBtn       = document.getElementById('invokeBtn');
-const cardScene       = document.getElementById('cardScene');
-const cardFlipper     = document.getElementById('cardFlipper');
-const cardFrontFace   = document.getElementById('cardFrontFace');
-const cbMsg           = document.getElementById('cbMsg');
-const cbArcanaEmoji   = document.getElementById('cbArcanaEmoji');
-const cbArcanaEn      = document.getElementById('cbArcanaEn');
-const cbArcanaJa      = document.getElementById('cbArcanaJa');
-const loadingInline   = document.getElementById('loadingInline');
-const resultArea      = document.getElementById('resultArea');
-const resultMessage   = document.getElementById('resultMessage');
+const invokeBtn          = document.getElementById('invokeBtn');
+const cardScene          = document.getElementById('cardScene');
+const cardFlipper        = document.getElementById('cardFlipper');
+const cardBackImg        = document.getElementById('cardBackImg');
+const loadingInline      = document.getElementById('loadingInline');
+const resultArea         = document.getElementById('resultArea');
+const resultMessage      = document.getElementById('resultMessage');
 const resultArcanaVisual = document.getElementById('resultArcanaVisual');
-const reversedBadge   = document.getElementById('reversedBadge');
-const resultArcanaEn  = document.getElementById('resultArcanaEn');
-const resultArcanaJa  = document.getElementById('resultArcanaJa');
-const starsRow        = document.getElementById('starsRow');
-const againBtn        = document.getElementById('againBtn');
-const historyLink     = document.getElementById('historyLink');
-const modalOverlay    = document.getElementById('modalOverlay');
-const modalClose      = document.getElementById('modalClose');
-const historyList     = document.getElementById('historyList');
-const storesBtn       = document.getElementById('storesBtn');
+const resultCardImg      = document.getElementById('resultCardImg');
+const reversedBadge      = document.getElementById('reversedBadge');
+const resultArcanaEn     = document.getElementById('resultArcanaEn');
+const resultArcanaJa     = document.getElementById('resultArcanaJa');
+const starsRow           = document.getElementById('starsRow');
+const againBtn           = document.getElementById('againBtn');
+const historyLink        = document.getElementById('historyLink');
+const modalOverlay       = document.getElementById('modalOverlay');
+const modalClose         = document.getElementById('modalClose');
+const historyList        = document.getElementById('historyList');
+const storesBtn          = document.getElementById('storesBtn');
 
 // ========== 状態変数 ==========
-let drawnCard = null;
-let drawnReversed = false;
-let isFlipped = false;
+let isFlipped   = false;
 let isAnimating = false;
 
 // ========== 初期化 ==========
 function init() {
-  // カード裏面パターンを描画
-  drawCardFrontPattern(cardFrontFace);
-
   // STORESリンクを設定
   if (storesBtn && CONFIG.STORES_URL) {
-    storesBtn.href = CONFIG.STORES_URL;
+    storesBtn.href   = CONFIG.STORES_URL;
     storesBtn.target = '_blank';
-    storesBtn.rel = 'noopener noreferrer';
+    storesBtn.rel    = 'noopener noreferrer';
   }
 
-  // カードをクリックしても引ける
-  cardScene.addEventListener('click', handleCardClick);
+  cardScene.addEventListener('click', handleInvoke);
   invokeBtn.addEventListener('click', handleInvoke);
   againBtn.addEventListener('click', handleReset);
   historyLink.addEventListener('click', openHistory);
@@ -61,53 +52,30 @@ function init() {
   });
 }
 
-// ========== カードクリック ==========
-function handleCardClick() {
-  if (!isFlipped && !isAnimating) {
-    handleInvoke();
-  }
-}
-
 // ========== カードを引く ==========
 async function handleInvoke() {
-  const userName   = document.getElementById('userName').value.trim();
-  const targetName = document.getElementById('targetName').value.trim();
-
-  if (!userName || !targetName) {
-    showInputError();
-    return;
-  }
-
-  if (isAnimating) return;
+  if (isAnimating || isFlipped) return;
   isAnimating = true;
 
-  // カードを引く
   const { card, isReversed } = drawCard();
-  drawnCard = card;
-  drawnReversed = isReversed;
 
-  // UIをロック
   invokeBtn.disabled = true;
   loadingInline.classList.add('show');
 
-  // カードをフリップ
-  setTimeout(() => {
-    flipCard(card, isReversed);
-  }, 300);
+  // カード表面画像を事前ロード（フリップ後に見える面）
+  await loadCardImage(cardBackImg, card.image);
 
-  // AIメッセージを取得
-  const message = await fetchMessage(userName, targetName, card, isReversed);
+  await sleep(400);
+  flipCard();
 
-  // 結果を表示
-  showResult(card, isReversed, message, userName, targetName);
+  const message = await fetchMessage(card, isReversed);
 
-  // 履歴に保存
+  showResult(card, isReversed, message);
+
   saveHistory({
-    date: new Date().toLocaleString('ja-JP'),
-    userName,
-    targetName,
-    cardEn: card.en,
-    cardJa: card.ja,
+    date:     new Date().toLocaleString('ja-JP'),
+    cardEn:   card.en,
+    cardJa:   card.ja,
     reversed: isReversed,
     message,
   });
@@ -116,44 +84,62 @@ async function handleInvoke() {
   isAnimating = false;
 }
 
-// ========== カードフリップ ==========
-function flipCard(card, isReversed) {
-  // カード背面にデータをセット
-  cbMsg.innerHTML = getCardMessage(card, isReversed).replace(/。/g, '。<br>');
-  cbArcanaEmoji.textContent = card.emoji;
-  cbArcanaEn.textContent = card.en;
-  cbArcanaJa.textContent = isReversed ? card.ja + '（逆）' : card.ja;
+// ========== 画像ロード（フォールバック付き） ==========
+function loadCardImage(imgEl, src) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      imgEl.src = src;
+      imgEl.style.display = 'block';
+      resolve();
+    };
+    img.onerror = () => {
+      // 画像が存在しない場合はフォールバック表示
+      imgEl.src = '';
+      imgEl.style.display = 'none';
+      imgEl.parentElement.dataset.fallback = 'true';
+      resolve();
+    };
+    img.src = src;
+  });
+}
 
+// ========== カードフリップ ==========
+function flipCard() {
   cardFlipper.classList.add('flipped');
   cardScene.classList.add('glow-anim');
   isFlipped = true;
 }
 
 // ========== 結果表示 ==========
-function showResult(card, isReversed, message, userName, targetName) {
+function showResult(card, isReversed, message) {
   resultMessage.innerHTML = message.replace(/\n/g, '<br>');
 
-  resultArcanaVisual.textContent = card.emoji;
+  // 結果エリアのカード画像（フォールバック付き）
+  loadCardImage(resultCardImg, card.image).then(() => {
+    if (!resultCardImg.src || resultCardImg.style.display === 'none') {
+      // 画像なしのフォールバック：絵文字で代替
+      resultArcanaVisual.innerHTML = `<span style="font-size:40px;display:flex;align-items:center;justify-content:center;height:100%">${card.emoji}</span>`;
+    }
+  });
+
   resultArcanaVisual.classList.toggle('reversed', isReversed);
-
   reversedBadge.style.display = isReversed ? 'inline-block' : 'none';
-  resultArcanaEn.textContent = card.en;
-  resultArcanaJa.textContent = card.ja;
-
-  starsRow.textContent = getStars(card, isReversed);
+  resultArcanaEn.textContent  = card.en;
+  resultArcanaJa.textContent  = card.ja;
+  starsRow.textContent        = getStars(card, isReversed);
 
   resultArea.classList.add('show', 'fade-in-up');
 
-  // スムーズスクロール
   setTimeout(() => {
     resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, 300);
+  }, 400);
 }
 
 // ========== Gemini API 呼び出し ==========
-async function fetchMessage(userName, targetName, card, isReversed) {
-  // APIキーが設定されていない場合はカードのデフォルトメッセージを使用
+async function fetchMessage(card, isReversed) {
   if (!CONFIG.GEMINI_API_KEY || CONFIG.GEMINI_API_KEY === 'YOUR_GEMINI_API_KEY_HERE') {
+    await sleep(800);
     return getCardMessage(card, isReversed);
   }
 
@@ -161,36 +147,31 @@ async function fetchMessage(userName, targetName, card, isReversed) {
 あなたはプロの恋愛タロット占い師です。
 次の条件でタロット占いの結果メッセージを日本語で生成してください。
 
-- 相談者の名前: ${userName}
-- 気になる相手の名前: ${targetName}
 - 引いたカード: ${card.ja}（${card.en}）${isReversed ? '【逆位置】' : '【正位置】'}
-- テーマ: ${targetName}さんの${userName}さんへの気持ち
+- テーマ: 気になるあの人の気持ち
 
 要件:
 - 70〜100文字程度でまとめてください
 - 神秘的で温かみのある文体にしてください
-- ${userName}さんと${targetName}さんの名前を自然に使ってください
 - 具体的でポジティブ（逆位置でも希望を感じさせる）内容にしてください
-- 「。」で文を区切り、改行はしないでください
+- 「。」で文を区切ってください
 
 メッセージのみを出力してください（前置きや説明は不要）。
 `.trim();
 
   try {
-    const response = await fetch(`${CONFIG.GEMINI_API_URL}?key=${CONFIG.GEMINI_API_KEY}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: {
-          temperature: 0.9,
-          maxOutputTokens: 200,
-        },
-      }),
-    });
-
+    const response = await fetch(
+      `${CONFIG.GEMINI_API_URL}?key=${CONFIG.GEMINI_API_KEY}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { temperature: 0.9, maxOutputTokens: 200 },
+        }),
+      }
+    );
     if (!response.ok) throw new Error(`API Error: ${response.status}`);
-
     const data = await response.json();
     const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
     return text ? text.trim() : getCardMessage(card, isReversed);
@@ -200,38 +181,15 @@ async function fetchMessage(userName, targetName, card, isReversed) {
   }
 }
 
-// ========== 入力エラー表示 ==========
-function showInputError() {
-  const fields = document.querySelectorAll('.field input');
-  fields.forEach(input => {
-    if (!input.value.trim()) {
-      input.style.borderColor = 'rgba(224,128,128,0.6)';
-      input.addEventListener('input', () => {
-        input.style.borderColor = '';
-      }, { once: true });
-    }
-  });
-}
-
 // ========== リセット ==========
 function handleReset() {
-  // カードを戻す
   cardFlipper.classList.remove('flipped');
   cardScene.classList.remove('glow-anim');
   isFlipped = false;
 
-  // 結果を非表示
   resultArea.classList.remove('show', 'fade-in-up');
-
-  // ボタンを解除
   invokeBtn.disabled = false;
 
-  // カードパターンを再描画（新鮮な感じ）
-  setTimeout(() => {
-    drawCardFrontPattern(cardFrontFace);
-  }, 500);
-
-  // 上にスクロール
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -246,31 +204,30 @@ function saveHistory(entry) {
 }
 
 function getHistory() {
-  try {
-    return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
-  } catch {
-    return [];
-  }
+  try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'); }
+  catch { return []; }
 }
 
 function openHistory() {
   const history = getHistory();
-  if (history.length === 0) {
-    historyList.innerHTML = '<div class="history-empty">まだ鑑定記録がありません</div>';
-  } else {
-    historyList.innerHTML = history.map(h => `
-      <div class="history-item">
-        <div class="history-date">${h.date}</div>
-        <div class="history-card">${h.cardJa}（${h.cardEn}）${h.reversed ? '【逆位置】' : ''}</div>
-        <div class="history-msg">${h.message}</div>
-      </div>
-    `).join('');
-  }
+  historyList.innerHTML = history.length === 0
+    ? '<div class="history-empty">まだ鑑定記録がありません</div>'
+    : history.map(h => `
+        <div class="history-item">
+          <div class="history-date">${h.date}</div>
+          <div class="history-card">${h.cardJa}（${h.cardEn}）${h.reversed ? '【逆位置】' : ''}</div>
+          <div class="history-msg">${h.message}</div>
+        </div>`).join('');
   modalOverlay.classList.add('show');
 }
 
 function closeHistory() {
   modalOverlay.classList.remove('show');
+}
+
+// ========== ユーティリティ ==========
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 // ========== 起動 ==========

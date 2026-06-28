@@ -29,15 +29,6 @@
     <div class="form-box">
       <div class="c-bl"></div><div class="c-br"></div>
 
-      <div class="field">
-        <label>✦ あなたのお名前</label>
-        <input type="text" id="userName" placeholder="例：さくら">
-      </div>
-      <div class="field">
-        <label>✦ 気になるあの人のお名前</label>
-        <input type="text" id="targetName" placeholder="例：たかし">
-      </div>
-
       <!-- カード（フォーム内） -->
       <div class="form-card-wrap">
         <div class="card-hint" id="cardHint">✦ カードをクリックして引く ✦</div>
@@ -45,20 +36,12 @@
           <div class="card-flipper" id="cardFlipper">
             <!-- 表面：裏向き状態 -->
             <div class="card-face card-front" id="cardFrontFace">
-              <!-- カード裏面デザイン（JavaScript で描画） -->
+              <img src="images/card_back.png" alt="カードの裏面" style="width: 100%; height: 100%; object-fit: cover;">
             </div>
             <!-- 裏面：カード内容 -->
             <div class="card-face card-back-face" id="cardBackFace">
-              <span class="cb-moon">🌙</span>
-              <div class="cb-msg-area">
-                <div class="cb-msg" id="cbMsg">カードを引いて<br>運命を知りましょう</div>
-              </div>
-              <div class="cb-arcana" id="cbArcana">
-                <div class="cb-arcana-emoji" id="cbArcanaEmoji"></div>
-                <div class="cb-arcana-en" id="cbArcanaEn"></div>
-                <div class="cb-arcana-ja" id="cbArcanaJa"></div>
-              </div>
-              <div class="cb-guide">✦ THE ORACLE ✦</div>
+              <!-- JSで動的に設定するか、初期画像を設定 -->
+              <img id="cardBackImg" src="" alt="カード表面" style="width: 100%; height: 100%; object-fit: cover;">
             </div>
           </div>
         </div>
@@ -87,7 +70,9 @@
       </div>
 
       <div class="result-arcana" id="resultArcana">
-        <div class="result-arcana-visual" id="resultArcanaVisual"></div>
+        <div class="result-arcana-visual" id="resultArcanaVisual">
+          <img id="resultCardImg" src="" alt="タロットカード" style="width: 100%; height: 100%; object-fit: cover; border-radius: 6px;">
+        </div>
         <div class="result-arcana-info">
           <div class="reversed-badge" id="reversedBadge" style="display:none">逆位置</div>
           <div class="result-arcana-en" id="resultArcanaEn"></div>

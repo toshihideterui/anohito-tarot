@@ -96,31 +96,7 @@ body {
 .form-box .c-bl   { bottom:-1px; left:-1px; border-width:0 0 1px 1px; }
 .form-box .c-br   { bottom:-1px; right:-1px; border-width:0 1px 1px 0; }
 
-/* ========== フィールド ========== */
-.field {
-  margin-bottom: 16px;
-}
-.field label {
-  display: block;
-  font-size: 10px;
-  letter-spacing: 3px;
-  color: #7a6230;
-  margin-bottom: 7px;
-}
-.field input {
-  width: 100%;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(201,168,76,0.2);
-  border-radius: 2px;
-  color: #e8dcc0;
-  padding: 11px 14px;
-  font-family: inherit;
-  font-size: 15px;
-  outline: none;
-  transition: border-color .3s;
-}
-.field input:focus { border-color: rgba(201,168,76,0.5); }
-.field input::placeholder { color: #5a5040; }
+/* 入力フィールドは使用しません */
 
 /* ========== カードエリア ========== */
 .form-card-wrap {
@@ -166,67 +142,29 @@ body {
   box-shadow: 0 0 30px rgba(201,168,76,0.2), 0 10px 40px rgba(0,0,0,0.6);
 }
 
-/* カード前面（裏向き状態） */
+/* カード前面（裏向き状態）- 裏面画像を使用 */
 .card-front {
-  background: linear-gradient(135deg, #1a0a35 0%, #2d1060 50%, #1a0a35 100%);
   border: 1px solid rgba(201,168,76,0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
-.card-front canvas {
+.card-front img {
   width: 100%;
   height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
-/* カード背面（カード内容） */
+/* カード背面（カード内容）- 表面画像を使用 */
 .card-back-face {
   transform: rotateY(180deg);
-  background: linear-gradient(160deg, #1e0840, #2d1060, #160630);
   border: 1px solid rgba(201,168,76,0.5);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  padding: 18px 14px 14px;
 }
-.card-back-face::before {
-  content: '';
-  position: absolute;
-  inset: 5px;
-  border: 1px solid rgba(201,168,76,0.2);
-  border-radius: 6px;
-  pointer-events: none;
+/* カード表面画像 */
+.card-back-face img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
-
-.cb-moon { font-size: 30px; color: #c9a84c; }
-.cb-guide { font-size: 9px; letter-spacing: 3px; color: #7a6230; }
-
-.cb-msg-area {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px 6px;
-}
-.cb-msg {
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1.8;
-  text-align: center;
-  color: #e8dcc0;
-}
-
-.cb-arcana { text-align: center; }
-.cb-arcana-emoji { font-size: 26px; }
-.cb-arcana-en {
-  font-family: 'Cinzel Decorative', cursive;
-  font-size: 7px;
-  letter-spacing: 1px;
-  color: #c9a84c;
-  margin-top: 3px;
-}
-.cb-arcana-ja { font-size: 8px; color: #7a6230; margin-top: 2px; }
 
 /* ========== ボタン ========== */
 .invoke-btn {
@@ -328,16 +266,13 @@ body {
   margin-bottom: 22px;
 }
 .result-arcana-visual {
-  width: 68px;
-  height: 102px;
+  width: 80px;
+  height: 120px;
   border: 1px solid rgba(201,168,76,0.4);
   border-radius: 6px;
-  background: rgba(201,168,76,0.05);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 34px;
+  overflow: hidden;
   flex-shrink: 0;
+  transition: transform 0.4s ease;
 }
 .result-arcana-visual.reversed { transform: rotate(180deg); }
 .result-arcana-info { text-align: left; }
