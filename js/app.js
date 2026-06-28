@@ -15,6 +15,8 @@ const cardFlipper        = document.getElementById('cardFlipper');
 const cardBackImg        = document.getElementById('cardBackImg');
 const cardGuideTitle     = document.getElementById('cardGuideTitle');
 const cardMainMessage    = document.getElementById('cardMainMessage');
+const cardNameEn         = document.getElementById('cardNameEn');
+const cardNameJa         = document.getElementById('cardNameJa');
 const loadingInline      = document.getElementById('loadingInline');
 const loadingText        = document.getElementById('loadingText');
 const resultExtras       = document.getElementById('resultExtras');
@@ -112,6 +114,10 @@ function showResult(card, isReversed, message) {
   if (isReversed) {
     cardGuideTitle.textContent += ' (逆位置)';
   }
+
+  // カード名を設定
+  cardNameEn.textContent = card.en;
+  cardNameJa.textContent = isReversed ? `${card.ja} (逆位置)` : card.ja;
 
   // 星評価を設定
   starsRow.textContent = getStars(card, isReversed);
