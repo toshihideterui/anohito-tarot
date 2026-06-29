@@ -26,18 +26,17 @@
         <div class="card-face card-front" id="cardFrontFace">
           <img src="images/card_back_single.png?v=17" alt="カードの裏面">
         </div>
-        <!-- 裏面：引いたカード表面 (例：card_fool.png) -->
+        <!-- 裏面：縦並びレイアウト（重なりなし） -->
         <div class="card-face card-back-face" id="cardBackFace">
-          <!-- タロットカード（枠付き） -->
+          <!-- 上：ガイドタイトル＋メッセージ -->
+          <div class="card-guide-title" id="cardGuideTitle">― 月の導き ―</div>
+          <div class="card-main-message" id="cardMainMessage">あなたのことをもっと知りたいと思っています</div>
+          <!-- 中：カード画像 -->
           <img id="cardBackImg" src="" alt="カード表面">
-          <!-- その上に重ねる動的テキスト -->
-          <div class="card-overlay-content">
-            <div class="card-guide-title" id="cardGuideTitle">― 月の導き ―</div>
-            <div class="card-main-message" id="cardMainMessage">あなたのことをもっと知りたいと思っています</div>
-            <div class="card-name-area">
-              <div class="card-name-en" id="cardNameEn">THE MOON</div>
-              <div class="card-name-ja" id="cardNameJa">月</div>
-            </div>
+          <!-- 下：カード名 -->
+          <div class="card-name-area">
+            <div class="card-name-en" id="cardNameEn">THE MOON</div>
+            <div class="card-name-ja" id="cardNameJa">月</div>
           </div>
         </div>
       </div>
