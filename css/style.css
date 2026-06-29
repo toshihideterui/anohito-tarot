@@ -99,21 +99,51 @@ body {
   display: block;
 }
 
-/* 裏面：引いたカード表面 */
+/* 裏面：縦並びレイアウト（重なりなし） */
 .card-back-face {
   transform: rotateY(180deg);
-  background: #110524;
+  background: linear-gradient(160deg, #1e0840, #2d1060, #160630);
+  border: 1px solid rgba(201,168,76,0.4);
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  padding: 8% 6% 6%;
+  padding: 6% 8% 5%;
+  gap: 0;
 }
+
+/* テキストエリア上部 */
+.card-overlay-content {
+  display: contents; /* flexの子として直接並ぶ */
+}
+
+.card-guide-title {
+  font-size: 10px;
+  font-weight: 400;
+  color: #f0d080;
+  letter-spacing: 2px;
+  text-shadow: 0 0 10px rgba(240,208,128,0.6);
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.card-main-message {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.7;
+  color: #ffffff;
+  text-align: center;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.9);
+  flex-shrink: 0;
+  padding: 0 4%;
+}
+
+/* カード画像（中央） */
 .card-back-face img {
-  width: 60%;
+  width: 75%;
   height: auto;
-  max-height: 50%;
+  max-height: 42%;
   object-fit: contain;
   display: block;
   border-radius: 6px;
@@ -121,53 +151,24 @@ body {
   flex-shrink: 0;
 }
 
-/* テキストエリア（画像と重ならない） */
-.card-overlay-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  flex: 1;
-  padding: 4% 6% 2%;
-  gap: 6px;
-}
-
-.card-guide-title {
-  font-size: 11px;
-  font-weight: 400;
-  color: #f0d080;
-  letter-spacing: 2px;
-  text-shadow: 0 0 10px rgba(240, 208, 128, 0.6);
-  text-align: center;
-}
-
-.card-main-message {
-  font-size: 15px;
-  font-weight: 700;
-  line-height: 1.7;
-  color: #ffffff;
-  text-align: center;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.9), 0 0 12px rgba(106,26,154,0.6);
-}
-
 .card-name-area {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
+  flex-shrink: 0;
 }
 .card-name-en {
   font-family: 'Cinzel Decorative', cursive;
-  font-size: 9px;
+  font-size: 8px;
   font-weight: 700;
   letter-spacing: 2px;
   color: #f0d080;
-  text-shadow: 0 0 8px rgba(240, 208, 128, 0.6);
+  text-shadow: 0 0 8px rgba(240,208,128,0.6);
   margin-bottom: 2px;
 }
 .card-name-ja {
-  font-size: 9px;
+  font-size: 8px;
   color: #7a7060;
   letter-spacing: 2px;
 }
