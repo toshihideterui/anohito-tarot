@@ -7,11 +7,8 @@
  */
 
 const CONFIG = {
-  // ✅ ここに Gemini API キーを入力してください
-  GEMINI_API_KEY: 'AIzaSyAfWTTdUVvEv5eHfyNvtP5E5pNpZW9_0n0',
-
-  // Gemini API エンドポイント
-  GEMINI_API_URL: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent',
+  // Cloudflare Worker プロキシURL（APIキーはWorker側の環境変数で管理）
+  PROXY_URL: 'https://anohito-proxy.toshihide3.workers.dev',
 
   // STORESの予約ページURL
   STORES_URL: 'https://mfji1wtifttuhkyxhpye.stores.jp',

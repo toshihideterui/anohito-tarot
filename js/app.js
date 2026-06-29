@@ -130,13 +130,8 @@ function showResult(card, isReversed, message) {
   againBtn.style.display = 'flex';
 }
 
-// ========== Gemini API 呼び出し ==========
+// ========== Gemini API 呼び出し（プロキシ経由） ==========
 async function fetchMessage(card, isReversed) {
-  if (!CONFIG.GEMINI_API_KEY || CONFIG.GEMINI_API_KEY === 'YOUR_GEMINI_API_KEY_HERE') {
-    await sleep(800);
-    return getCardMessage(card, isReversed);
-  }
-
   const prompt = `
 あなたはプロの恋愛タロット占い師です。
 次の条件でタロット占いの結果メッセージを日本語で生成してください。
@@ -162,26 +157,23 @@ async function fetchMessage(card, isReversed) {
         await sleep(4000);
       }
 
-      const response = await fetch(
-        `${CONFIG.GEMINI_API_URL}?key=${CONFIG.GEMINI_API_KEY}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: { temperature: 0.9, maxOutputTokens: 100 },
-          }),
-        }
-      );
+      const response = await fetch(CONFIG.PROXY_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'gemini-2.0-flash',
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { temperature: 0.9, maxOutputTokens: 100 },
+        }),
+      });
 
       if (response.status === 429) {
         if (attempt < MAX_RETRIES) continue;
-        console.warn('Gemini API: レート制限のためデフォルトメッセージに切り替えます');
         return getCardMessage(card, isReversed);
       }
 
       if (!response.ok) {
-        throw new Error(`API Error: ${response.status}`);
+        throw new Error(`Proxy Error: ${response.status}`);
       }
 
       const data = await response.json();
