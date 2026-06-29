@@ -99,78 +99,44 @@ body {
   display: block;
 }
 
-/* 裏面：上・中・下の3分割レイアウト */
+/* 裏面：card_face_bg.png を背景に使用 */
 .card-back-face {
   transform: rotateY(180deg);
-  background: linear-gradient(160deg, #1e0840, #2d1060, #160630);
-  border: 1px solid rgba(201,168,76,0.4);
+  background: url('../images/card_face_bg.png') no-repeat center center;
+  background-size: cover;
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  padding: 5% 6% 4%;
-  overflow: hidden;
+  padding: 18% 10% 8%;
 }
 
-/* ===== 上エリア：月画像＋月の導き（固定） ===== */
-.card-top-area {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3px;
-  flex-shrink: 0;
-  width: 100%;
-}
-.card-moon-icon {
-  width: 36%;
-  height: auto;
-  object-fit: contain;
-  display: block;
-  filter: drop-shadow(0 0 8px rgba(201,168,76,0.6));
-}
-.card-guide-title {
-  font-size: 9px;
-  font-weight: 400;
-  color: #f0d080;
-  letter-spacing: 2px;
-  text-shadow: 0 0 10px rgba(240,208,128,0.6);
-  text-align: center;
-}
+.card-top-area { display: none; }
 
-/* ===== 中エリア：AIメッセージ（可変） ===== */
 .card-main-message {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
-  line-height: 1.7;
+  line-height: 1.8;
   color: #ffffff;
   text-align: center;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.9);
-  padding: 0 4%;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.9), 0 0 20px rgba(106,26,154,0.6);
+  padding: 0 8%;
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* ===== 下エリア：カード画像＋カード名（可変） ===== */
 .card-bottom-area {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  flex-shrink: 0;
   width: 100%;
+  padding-bottom: 2%;
 }
-.card-back-face .card-arcana-img {
-  width: 55%;
-  height: auto;
-  max-height: 32%;
-  object-fit: contain;
-  display: block;
-  border-radius: 4px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.7);
-}
+.card-back-face .card-arcana-img { display: none; }
+
 .card-name-area {
   display: flex;
   flex-direction: column;
@@ -179,16 +145,16 @@ body {
 }
 .card-name-en {
   font-family: 'Cinzel Decorative', cursive;
-  font-size: 8px;
+  font-size: 9px;
   font-weight: 700;
   letter-spacing: 2px;
   color: #f0d080;
   text-shadow: 0 0 8px rgba(240,208,128,0.6);
-  margin-bottom: 1px;
+  margin-bottom: 2px;
 }
 .card-name-ja {
-  font-size: 8px;
-  color: #7a7060;
+  font-size: 9px;
+  color: #c9a84c;
   letter-spacing: 2px;
 }
 
