@@ -14,7 +14,7 @@ const initAction         = document.getElementById('initAction');
 const cardScene          = document.getElementById('cardScene');
 const cardFlipper        = document.getElementById('cardFlipper');
 const cardBackImg        = document.getElementById('cardBackImg');
-const cardGuideTitle     = document.getElementById('cardGuideTitle');
+const cardGuideTitle     = document.getElementById('cardGuideTitle'); // null可
 const cardMainMessage    = document.getElementById('cardMainMessage');
 const cardNameEn         = document.getElementById('cardNameEn');
 const cardNameJa         = document.getElementById('cardNameJa');
@@ -58,7 +58,7 @@ async function handleInvoke() {
   await loadCardImage(cardBackImg, card.image);
 
   // ガイドタイトルとメッセージの初期セット（フリップ時にすぐ読めるようにする）
-  cardGuideTitle.textContent = `― ${card.ja}の導き ―`;
+  if (cardGuideTitle) cardGuideTitle.textContent = `― ${card.ja}の導き ―`;
   cardMainMessage.textContent = '運命の糸を解いています…';
 
   await sleep(400);
@@ -110,9 +110,9 @@ function flipCard() {
 function showResult(card, isReversed, message) {
   // メッセージ切り替え
   cardMainMessage.innerHTML = message.replace(/\n/g, '<br>');
-  cardGuideTitle.textContent = `― ${card.ja}の導き ―`;
-  if (isReversed) {
-    cardGuideTitle.textContent += ' (逆位置)';
+  if (cardGuideTitle) {
+    cardGuideTitle.textContent = `― ${card.ja}の導き ―`;
+    if (isReversed) cardGuideTitle.textContent += ' (逆位置)';
   }
 
   // カード名を設定
