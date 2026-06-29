@@ -54,8 +54,8 @@ async function handleInvoke() {
   invokeBtn.disabled = true;
   loadingInline.classList.add('show');
 
-  // カード表面画像を事前ロード
-  await loadCardImage(cardBackImg, card.image);
+  // カード表面画像を事前ロード（画像要素がある場合のみ）
+  if (cardBackImg) await loadCardImage(cardBackImg, card.image);
 
   // ガイドタイトルとメッセージの初期セット（フリップ時にすぐ読めるようにする）
   if (cardGuideTitle) cardGuideTitle.textContent = `― ${card.ja}の導き ―`;
@@ -111,13 +111,14 @@ function showResult(card, isReversed, message) {
   // メッセージ切り替え
   cardMainMessage.innerHTML = message.replace(/\n/g, '<br>');
   if (cardGuideTitle) {
-    cardGuideTitle.textContent = `― ${card.ja}の導き ―`;
-    if (isReversed) cardGuideTitle.textContent += ' (逆位置)';
+    cardGuideTitle.textContent = `― 月の導き ―`;
   }
 
-  // カード名を設定
+  // カード名を設定（逆位置は下に小さく表示）
   cardNameEn.textContent = card.en;
-  cardNameJa.textContent = isReversed ? `${card.ja} (逆位置)` : card.ja;
+  cardNameJa.innerHTML = isReversed
+    ? `${card.ja}<br><span style="font-size:8px;color:#e08080;letter-spacing:1px;">逆 位 置</span>`
+    : card.ja;
 
   // 星評価を設定してフェードイン
   starsRow.textContent = getStars(card, isReversed);
@@ -143,8 +144,10 @@ async function fetchMessage(card, isReversed) {
 - 30〜50文字程度で、短く一言で心に響くメッセージにしてください
 - 占いカードの中央に配置されるため、長い文章は避けてください
 - 神秘的で温かみのある文体にしてください
-- 具体的でポジティブ（逆位置でも希望を感じさせる）内容にしてください
 - 「。」で文を区切ってください
+${isReversed
+  ? '- 逆位置なので「まだ迷いがある」「距離を感じている」「気持ちを整理中」など、少し慎重・内向きなニュアンスにしてください。ただし希望が感じられる表現にしてください。'
+  : '- 正位置なので「気になっている」「会いたい」「想いを温めている」など、ポジティブで前向きな表現にしてください。'}
 
 メッセージのみを出力してください（前置きや説明は不要）。
 `.trim();
