@@ -9,7 +9,7 @@
 <meta property="og:description" content="タロットカードがあなたの恋の悩みに答えます。">
 <meta property="og:type" content="website">
 <title>あの人の気持ち鑑定｜タロット占い</title>
-<link rel="stylesheet" href="css/style.css?v=17">
+<link rel="stylesheet" href="css/style.css?v=28">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200;300;400;700&family=Cinzel+Decorative:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -28,6 +28,7 @@
         </div>
         <!-- 裏面：card_face_bg.png を背景に使用 -->
         <div class="card-face card-back-face" id="cardBackFace">
+          <img class="card-bg-img" src="images/card_face_bg.png?v=24" alt="" aria-hidden="true">
           <!-- 中：AIメッセージ（可変） -->
           <div class="card-main-message" id="cardMainMessage">あなたのことをもっと知りたいと思っています</div>
           <!-- 下：カード名（可変） -->
@@ -37,6 +38,14 @@
               <div class="card-name-ja" id="cardNameJa">月</div>
             </div>
           </div>
+        </div>
+      </div>
+      <div class="result-card-panel" id="resultCardPanel" aria-hidden="true">
+        <img class="result-card-bg" src="images/card_face_bg.png?v=26" alt="" aria-hidden="true">
+        <div class="result-card-message" id="resultCardMessage"></div>
+        <div class="result-card-name-area">
+          <div class="card-name-en" id="resultCardNameEn"></div>
+          <div class="card-name-ja" id="resultCardNameJa"></div>
         </div>
       </div>
     </div>
@@ -57,6 +66,10 @@
         <div class="orb"></div>
         <div class="lt" id="loadingText">星に問いかけています…</div>
       </div>
+    </div>
+
+    <div class="stores-link-container">
+      <a class="stores-link" id="storesLink" href="https://mfji1wtifttuhkyxhpye.stores.jp" target="_blank" rel="noopener noreferrer">もっと詳しく鑑定する</a>
     </div>
 
     <!-- 履歴表示リンク（初期状態でも結果表示時でも常に下部に配置） -->

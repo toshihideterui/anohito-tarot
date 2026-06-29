@@ -7,9 +7,11 @@ body {
   font-weight: 300;
   min-height: 100vh;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: max(8px, env(safe-area-inset-top)) 8px max(12px, env(safe-area-inset-bottom));
 }
 
 #bgCanvas {
@@ -24,9 +26,9 @@ body {
   position: relative;
   z-index: 1;
   width: 100%;
-  max-width: 440px;
-  /* アスペクト比をモックアップ画像に固定 */
-  aspect-ratio: 718 / 1070;
+  max-width: min(440px, calc(100vw - 16px));
+  /* 背景画像 1024x1536 に合わせて端の装飾が切れないようにする */
+  aspect-ratio: 2 / 3;
   margin: 0 auto;
   box-shadow: 0 0 50px rgba(0, 0, 0, 0.9), 0 0 100px rgba(106, 26, 154, 0.3);
   overflow: hidden;
@@ -36,13 +38,13 @@ body {
 /* 初期状態：ボタン文字や星のない、カード無しの真っ新な背景 */
 .app.init-bg {
   background: url('../images/bg_without_card.png?v=17') no-repeat center center;
-  background-size: cover;
+  background-size: 100% 100%;
 }
 
 /* 結果表示時：モックアップ本来の、ボタン枠や星枠が描かれた背景 */
 .app.result-bg {
   background: url('../images/result_bg.png?v=17') no-repeat center center;
-  background-size: cover;
+  background-size: 100% 100%;
 }
 
 #appHeader {
@@ -66,22 +68,27 @@ body {
   cursor: pointer;
   z-index: 10;
 }
+.card-scene.is-disabled {
+  pointer-events: none;
+  cursor: wait;
+}
 
 .card-flipper {
   width: 100%;
   height: 100%;
   position: relative;
-  transform-style: preserve-3d;
-  transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: flat;
+  transition: transform 0.45s ease, filter 0.45s ease;
 }
 .card-flipper.flipped {
-  transform: rotateY(180deg);
+  transform: scale(1.015);
+  filter: brightness(1.06);
 }
 
 .card-face {
   position: absolute;
   inset: 0;
-  backface-visibility: hidden;
+  backface-visibility: visible;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
@@ -91,6 +98,10 @@ body {
 /* 表面：切り抜いたカード裏面 (二重枠にならない) */
 .card-front {
   background: #110524;
+  z-index: 3;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
 }
 .card-front img {
   width: 100%;
@@ -101,36 +112,123 @@ body {
 
 /* 裏面：card_face_bg.png を背景に使用 */
 .card-back-face {
-  transform: rotateY(180deg);
-  background: url('../images/card_face_bg.png') no-repeat center center;
-  background-size: cover;
+  transform: none;
+  background-color: #12051f;
   position: relative;
+  padding: 0;
+  z-index: 1;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+.card-flipper.flipped .card-front {
+  opacity: 0;
+  visibility: hidden;
+}
+.card-flipper.flipped .card-back-face {
+  opacity: 1;
+  visibility: visible;
+  z-index: 4;
+}
+.card-bg-img {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: fill;
+  pointer-events: none;
+}
+
+.result-card-panel {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  opacity: 0;
+  visibility: hidden;
+  overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid rgba(201, 168, 76, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  background: #12051f;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+  pointer-events: none;
+}
+.card-scene.result-shown .result-card-panel {
+  opacity: 1;
+  visibility: visible;
+}
+.card-scene.result-shown .card-flipper {
+  opacity: 0;
+  visibility: hidden;
+}
+.result-card-bg {
+  position: absolute;
+  top: 1.2%;
+  left: 0;
+  z-index: 1;
+  width: 100%;
+  height: 98.8%;
+  display: block;
+  object-fit: fill;
+}
+.result-card-message {
+  position: absolute;
+  z-index: 2;
+  top: 23.5%;
+  right: 10%;
+  bottom: 20%;
+  left: 10%;
+  padding: 0 6%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.66;
+  text-align: center;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.9), 0 0 20px rgba(106,26,154,0.6);
+  overflow-wrap: anywhere;
+}
+.result-card-name-area {
+  position: absolute;
+  z-index: 2;
+  bottom: 5.5%;
+  left: 0;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 28% 10% 30%;
 }
 
 .card-top-area { display: none; }
 
 .card-main-message {
+  position: absolute;
+  z-index: 2;
+  top: 23.5%;
+  right: 10%;
+  bottom: 20%;
+  left: 10%;
   font-size: 14px;
   font-weight: 700;
-  line-height: 1.8;
+  line-height: 1.66;
   color: #ffffff;
   text-align: center;
   text-shadow: 0 2px 10px rgba(0,0,0,0.9), 0 0 20px rgba(106,26,154,0.6);
-  padding: 0 8%;
-  flex: 1;
+  padding: 0 6%;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow-wrap: anywhere;
 }
 
 .card-bottom-area {
   position: absolute;
-  bottom: 6%;
+  z-index: 2;
+  bottom: 5.5%;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -163,13 +261,24 @@ body {
 .love-fortune {
   position: absolute;
   top: 76.2%;
-  left: 0;
-  width: 100%;
+  left: 14%;
+  width: 72%;
   text-align: center;
   opacity: 0;
   transform: translateY(10px);
   transition: opacity 0.8s ease, transform 0.8s ease;
   z-index: 15;
+  padding: 6px 0 8px;
+}
+.love-fortune::before {
+  content: '';
+  position: absolute;
+  inset: -8px -10px -10px;
+  z-index: -1;
+  background:
+    linear-gradient(90deg, rgba(9,3,20,0), rgba(9,3,20,0.72) 16%, rgba(9,3,20,0.72) 84%, rgba(9,3,20,0)),
+    radial-gradient(ellipse at center, rgba(64,22,78,0.22), rgba(9,3,20,0) 68%);
+  pointer-events: none;
 }
 .love-fortune.show {
   opacity: 1;
@@ -192,10 +301,10 @@ body {
 /* ========== アクションボタン（左右完全半円のカプセル型ゴールド細枠ボタン） ========== */
 .action-container {
   position: absolute;
-  top: 81%;
-  left: 2.5%;
-  width: 95%;
-  height: 9.5%;
+  top: 83.3%;
+  left: 13%;
+  width: 74%;
+  height: 7.4%;
   z-index: 20;
   display: flex;
   align-items: center;
@@ -232,6 +341,7 @@ body {
   opacity: 0.5;
   cursor: not-allowed;
   transform: none;
+  filter: grayscale(0.2);
 }
 
 /* 初期状態では「もう一度占う」を非表示にする */
@@ -274,7 +384,7 @@ body {
 /* ========== 履歴リンク 位置を少し上に移動し、白文字に戻す ========== */
 .history-link-container {
   position: absolute;
-  top: 93.8%;
+  top: 95.4%;
   left: 0;
   width: 100%;
   text-align: center;
@@ -286,13 +396,47 @@ body {
   letter-spacing: 2px;
   cursor: pointer;
   display: inline-block;
-  padding: 5px 20px;
+  padding: 2px 18px;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
   transition: color 0.3s ease, text-shadow 0.3s ease;
 }
 .history-link:hover {
   color: #c9a84c;
   text-shadow: 0 0 8px rgba(201, 168, 76, 0.6);
+}
+
+.stores-link-container {
+  position: absolute;
+  top: 92.4%;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  z-index: 20;
+}
+.stores-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 18px;
+  padding: 0 12px;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: #b99445;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-decoration: none;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
+}
+.stores-link::after {
+  content: '  >';
+}
+.stores-link:focus-visible,
+.history-link:focus-visible,
+.tarot-btn:focus-visible,
+.modal-close:focus-visible {
+  outline: 2px solid rgba(240, 208, 128, 0.8);
+  outline-offset: 3px;
 }
 
 /* ========== カードの光アニメーション ========== */
@@ -377,4 +521,26 @@ body {
   color: #7a7060;
   font-size: 12px;
   padding: 30px 0;
+}
+
+@media (max-width: 360px) {
+  body {
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+  .tarot-btn {
+    font-size: 13px;
+    letter-spacing: 2.5px;
+  }
+  .card-main-message,
+  .result-card-message {
+    font-size: 12px;
+    line-height: 1.75;
+    padding: 0 7%;
+  }
+  .stores-link,
+  .history-link {
+    font-size: 10px;
+    letter-spacing: 1.4px;
+  }
 }

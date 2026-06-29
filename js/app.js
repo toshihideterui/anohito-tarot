@@ -10,6 +10,7 @@
 // ========== DOM要素 ==========
 const invokeBtn          = document.getElementById('invokeBtn');
 const againBtn           = document.getElementById('againBtn');
+const appContainer       = document.getElementById('appContainer');
 const initAction         = document.getElementById('initAction');
 const cardScene          = document.getElementById('cardScene');
 const cardFlipper        = document.getElementById('cardFlipper');
@@ -18,6 +19,10 @@ const cardGuideTitle     = document.getElementById('cardGuideTitle'); // null可
 const cardMainMessage    = document.getElementById('cardMainMessage');
 const cardNameEn         = document.getElementById('cardNameEn');
 const cardNameJa         = document.getElementById('cardNameJa');
+const resultCardPanel    = document.getElementById('resultCardPanel');
+const resultCardMessage  = document.getElementById('resultCardMessage');
+const resultCardNameEn   = document.getElementById('resultCardNameEn');
+const resultCardNameJa   = document.getElementById('resultCardNameJa');
 const loadingInline      = document.getElementById('loadingInline');
 const loadingText        = document.getElementById('loadingText');
 const loveFortune        = document.getElementById('loveFortune');
@@ -26,6 +31,7 @@ const historyLink        = document.getElementById('historyLink');
 const modalOverlay       = document.getElementById('modalOverlay');
 const modalClose         = document.getElementById('modalClose');
 const historyList        = document.getElementById('historyList');
+const storesLink         = document.getElementById('storesLink');
 const debugToast         = document.getElementById('debugToast');
 
 // ========== 状態変数 ==========
@@ -42,24 +48,33 @@ function init() {
   modalOverlay.addEventListener('click', (e) => {
     if (e.target === modalOverlay) closeHistory();
   });
+  if (storesLink && CONFIG.STORES_URL) {
+    storesLink.href = CONFIG.STORES_URL;
+  }
 }
 
 // ========== カードを引く ==========
 async function handleInvoke() {
   if (isAnimating || isFlipped) return;
   isAnimating = true;
+  setBusy(true);
 
   const { card, isReversed } = drawCard();
 
-  invokeBtn.disabled = true;
   loadingInline.classList.add('show');
+  if (loadingText) loadingText.textContent = '星に問いかけています…';
 
-  // カード表面画像を事前ロード（画像要素がある場合のみ）
+  // 画面上のカード画像は共通画像を使う。card.image は内部情報として保持する。
   if (cardBackImg) await loadCardImage(cardBackImg, card.image);
 
   // ガイドタイトルとメッセージの初期セット（フリップ時にすぐ読めるようにする）
   if (cardGuideTitle) cardGuideTitle.textContent = `― ${card.ja}の導き ―`;
   cardMainMessage.textContent = '運命の糸を解いています…';
+  cardNameEn.textContent = '';
+  cardNameJa.textContent = '';
+  resultCardMessage.textContent = '運命の糸を解いています…';
+  resultCardNameEn.textContent = '';
+  resultCardNameJa.textContent = '';
 
   await sleep(400);
   flipCard();
@@ -80,6 +95,7 @@ async function handleInvoke() {
   });
 
   loadingInline.classList.remove('show');
+  setBusy(false);
   isAnimating = false;
 }
 
@@ -103,6 +119,8 @@ function loadCardImage(imgEl, src) {
 function flipCard() {
   cardFlipper.classList.add('flipped');
   cardScene.classList.add('glow-anim');
+  cardScene.classList.add('result-shown');
+  if (resultCardPanel) resultCardPanel.setAttribute('aria-hidden', 'false');
   isFlipped = true;
 }
 
@@ -110,6 +128,7 @@ function flipCard() {
 function showResult(card, isReversed, message) {
   // メッセージ切り替え
   cardMainMessage.innerHTML = message.replace(/\n/g, '<br>');
+  resultCardMessage.innerHTML = message.replace(/\n/g, '<br>');
   if (cardGuideTitle) {
     cardGuideTitle.textContent = `― 月の導き ―`;
   }
@@ -117,6 +136,10 @@ function showResult(card, isReversed, message) {
   // カード名を設定（逆位置は下に小さく表示）
   cardNameEn.textContent = card.en;
   cardNameJa.innerHTML = isReversed
+    ? `${card.ja}<br><span style="font-size:8px;color:#e08080;letter-spacing:1px;">逆 位 置</span>`
+    : card.ja;
+  resultCardNameEn.textContent = card.en;
+  resultCardNameJa.innerHTML = isReversed
     ? `${card.ja}<br><span style="font-size:8px;color:#e08080;letter-spacing:1px;">逆 位 置</span>`
     : card.ja;
 
@@ -129,6 +152,10 @@ function showResult(card, isReversed, message) {
   // アクションボタンを切り替え
   invokeBtn.style.display = 'none';
   againBtn.style.display = 'flex';
+  if (appContainer) {
+    appContainer.classList.remove('init-bg');
+    appContainer.classList.add('result-bg');
+  }
 }
 
 // ========== Gemini API 呼び出し（プロキシ経由） ==========
@@ -193,8 +220,11 @@ ${isReversed
 
 // ========== リセット ==========
 function handleReset() {
+  if (isAnimating) return;
   cardFlipper.classList.remove('flipped');
   cardScene.classList.remove('glow-anim');
+  cardScene.classList.remove('result-shown');
+  if (resultCardPanel) resultCardPanel.setAttribute('aria-hidden', 'true');
   isFlipped = false;
 
   // 星評価を非表示
@@ -205,7 +235,17 @@ function handleReset() {
   // ボタン表示を元に戻す
   againBtn.style.display = 'none';
   invokeBtn.style.display = 'flex';
-  invokeBtn.disabled = false;
+  setBusy(false);
+  cardMainMessage.textContent = 'あなたのことをもっと知りたいと思っています';
+  cardNameEn.textContent = 'THE MOON';
+  cardNameJa.textContent = '月';
+  resultCardMessage.textContent = '';
+  resultCardNameEn.textContent = '';
+  resultCardNameJa.textContent = '';
+  if (appContainer) {
+    appContainer.classList.remove('result-bg');
+    appContainer.classList.add('init-bg');
+  }
 }
 
 // ========== 履歴管理 ==========
@@ -229,9 +269,9 @@ function openHistory() {
     ? '<div class="history-empty">まだ鑑定記録がありません</div>'
     : history.map(h => `
         <div class="history-item">
-          <div class="history-date">${h.date}</div>
-          <div class="history-card">${h.cardJa}（${h.cardEn}）${h.reversed ? '【逆位置】' : ''}</div>
-          <div class="history-msg">${h.message}</div>
+          <div class="history-date">${escapeHtml(h.date)}</div>
+          <div class="history-card">${escapeHtml(h.cardJa)}（${escapeHtml(h.cardEn)}）${h.reversed ? '【逆位置】' : '【正位置】'}</div>
+          <div class="history-msg">${escapeHtml(h.message)}</div>
         </div>`).join('');
   modalOverlay.classList.add('show');
 }
@@ -243,6 +283,21 @@ function closeHistory() {
 // ========== ユーティリティ ==========
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function setBusy(busy) {
+  invokeBtn.disabled = busy;
+  againBtn.disabled = busy;
+  cardScene.classList.toggle('is-disabled', busy);
+}
+
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
 }
 
 function showToast(msg, durationMs = 5000) {

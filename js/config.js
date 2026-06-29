@@ -1,16 +1,16 @@
 /**
  * config.js
  * -----------------------------------
- * Gemini API キーと各種設定を管理します。
- * ▼ デプロイ後、GEMINI_API_KEY に実際のキーを入力してください。
+ * Cloudflare Worker と各種設定を管理します。
+ * APIキーはフロントエンドに置かず、Worker 側の環境変数で管理します。
  * -----------------------------------
  */
 
 const CONFIG = {
-  // Cloudflare Worker プロキシURL（APIキーはWorker側の環境変数で管理）
+  // Cloudflare Worker プロキシURL（AI鑑定文生成用）
   PROXY_URL: 'https://anohito-proxy.toshihide3.workers.dev',
 
-  // STORESの予約ページURL
+  // STORESの有料鑑定ページURL
   STORES_URL: 'https://mfji1wtifttuhkyxhpye.stores.jp',
 
   // 占い結果の最大保存件数
