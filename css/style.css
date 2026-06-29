@@ -37,13 +37,13 @@ body {
 
 /* 初期状態：ボタン文字や星のない、カード無しの真っ新な背景 */
 .app.init-bg {
-  background: url('../images/bg_without_card.png?v=17') no-repeat center center;
+  background: url('../images/app_bg_clean.png?v=1') no-repeat center center;
   background-size: 100% 100%;
 }
 
 /* 結果表示時：モックアップ本来の、ボタン枠や星枠が描かれた背景 */
 .app.result-bg {
-  background: url('../images/result_bg.png?v=17') no-repeat center center;
+  background: url('../images/app_bg_clean.png?v=1') no-repeat center center;
   background-size: 100% 100%;
 }
 
@@ -255,30 +255,22 @@ body {
   font-size: 9px;
   color: #c9a84c;
   letter-spacing: 2px;
+  text-align: center;
+  text-indent: 2px;
 }
 
 /* ========== 星評価（今日の恋愛運）位置を少し上に移動 ========== */
 .love-fortune {
   position: absolute;
   top: 76.2%;
-  left: 14%;
-  width: 72%;
+  left: 18%;
+  width: 64%;
   text-align: center;
   opacity: 0;
   transform: translateY(10px);
   transition: opacity 0.8s ease, transform 0.8s ease;
   z-index: 15;
-  padding: 6px 0 8px;
-}
-.love-fortune::before {
-  content: '';
-  position: absolute;
-  inset: -8px -10px -10px;
-  z-index: -1;
-  background:
-    linear-gradient(90deg, rgba(9,3,20,0), rgba(9,3,20,0.72) 16%, rgba(9,3,20,0.72) 84%, rgba(9,3,20,0)),
-    radial-gradient(ellipse at center, rgba(64,22,78,0.22), rgba(9,3,20,0) 68%);
-  pointer-events: none;
+  padding: 3px 0 4px;
 }
 .love-fortune.show {
   opacity: 1;
@@ -301,10 +293,10 @@ body {
 /* ========== アクションボタン（左右完全半円のカプセル型ゴールド細枠ボタン） ========== */
 .action-container {
   position: absolute;
-  top: 83.3%;
-  left: 13%;
-  width: 74%;
-  height: 7.4%;
+  top: 85.8%;
+  left: 18%;
+  width: 64%;
+  height: 7.2%;
   z-index: 20;
   display: flex;
   align-items: center;
@@ -314,10 +306,11 @@ body {
 .tarot-btn {
   width: 100%;
   height: 100%;
+  box-sizing: border-box;
   border-radius: 100vh !important;
   border: none !important;
-  background: url('../images/btn_bg.png') no-repeat center center !important;
-  background-size: 100% 100% !important;
+  background: transparent !important;
+  background-size: auto !important;
   box-shadow: none !important;
   color: #ffffff !important;
   font-family: inherit;
@@ -329,14 +322,15 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  padding-top: 9px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .tarot-btn::before, .tarot-btn::after { display: none; }
 .tarot-btn:hover {
-  transform: translateY(-1px);
-  filter: brightness(1.1);
+  transform: none;
+  filter: brightness(1.08);
 }
-.tarot-btn:active { transform: translateY(1px); }
+.tarot-btn:active { transform: scale(0.99); }
 .tarot-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
@@ -384,7 +378,7 @@ body {
 /* ========== 履歴リンク 位置を少し上に移動し、白文字に戻す ========== */
 .history-link-container {
   position: absolute;
-  top: 95.4%;
+  top: 96.45%;
   left: 0;
   width: 100%;
   text-align: center;
@@ -407,7 +401,7 @@ body {
 
 .stores-link-container {
   position: absolute;
-  top: 92.4%;
+  top: 93.6%;
   left: 0;
   width: 100%;
   text-align: center;
