@@ -226,8 +226,8 @@ body {
 .action-container {
   position: absolute;
   top: 81%;
-  left: 17.5%;
-  width: 65%;
+  left: 2.5%;
+  width: 95%;
   height: 9.5%;
   z-index: 20;
   display: flex;
