@@ -238,13 +238,10 @@ body {
 .tarot-btn {
   width: 100%;
   height: 100%;
-  /* 左右完全半円のカプセル型 */
   border-radius: 100vh !important;
-  /* 上品な細い金枠 */
-  border: 1.2px solid #c9a84c !important;
-  /* 美しい紫グラデーション */
-  background: linear-gradient(to right, #4c1182 0%, #1a0433 100%) !important;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6) !important;
+  border: 1.5px solid #c9a84c !important;
+  background: linear-gradient(to right, #3d0d6e 0%, #1a0433 50%, #3d0d6e 100%) !important;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.6), inset 0 1px 0 rgba(201,168,76,0.2) !important;
   color: #ffffff !important;
   font-family: inherit;
   font-size: 15px;
@@ -255,17 +252,32 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+/* 左右の金装飾 */
+.tarot-btn::before,
+.tarot-btn::after {
+  content: '❧';
+  position: absolute;
+  color: #c9a84c;
+  font-size: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  text-shadow: 0 0 6px rgba(201,168,76,0.6);
+  pointer-events: none;
+}
+.tarot-btn::before { left: 14px; transform: translateY(-50%) scaleX(-1); }
+.tarot-btn::after  { right: 14px; }
+
 .tarot-btn:hover {
   transform: translateY(-1px);
   border-color: #f0d080 !important;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7), 0 0 10px rgba(201, 168, 76, 0.3) !important;
-  text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.7), 0 0 12px rgba(201,168,76,0.4) !important;
+  text-shadow: 0 0 8px rgba(255,255,255,0.6);
 }
-.tarot-btn:active {
-  transform: translateY(1px);
-}
+.tarot-btn:active { transform: translateY(1px); }
 .tarot-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
