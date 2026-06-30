@@ -322,7 +322,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-top: 9px;
+  padding-top: 5px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .tarot-btn::before, .tarot-btn::after { display: none; }
@@ -378,7 +378,7 @@ body {
 /* ========== 履歴リンク 位置を少し上に移動し、白文字に戻す ========== */
 .history-link-container {
   position: absolute;
-  top: 96.05%;
+  top: 95.35%;
   left: 0;
   width: 100%;
   text-align: center;
@@ -386,9 +386,9 @@ body {
 }
 .history-link {
   color: #e5c46c;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 300;
-  letter-spacing: 1.7px;
+  letter-spacing: 1.2px;
   cursor: pointer;
   display: inline-block;
   padding: 1px 14px;
@@ -403,7 +403,7 @@ body {
 
 .stores-link-container {
   position: absolute;
-  top: 93.55%;
+  top: 92.85%;
   left: 0;
   width: 100%;
   text-align: center;
@@ -413,15 +413,15 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 20px;
+  min-height: 18px;
   padding: 1px 14px;
   border: none;
   border-radius: 0;
   background: transparent;
   color: #e5c46c;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 300;
-  letter-spacing: 1.7px;
+  letter-spacing: 1.2px;
   line-height: 1.25;
   text-decoration: none;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
@@ -537,11 +537,11 @@ body {
     padding: 0 7%;
   }
   .history-link {
-    font-size: 13px;
-    letter-spacing: 1.2px;
+    font-size: 11px;
+    letter-spacing: 1px;
   }
   .stores-link {
-    font-size: 13px;
-    letter-spacing: 1.2px;
+    font-size: 11px;
+    letter-spacing: 1px;
   }
 }
