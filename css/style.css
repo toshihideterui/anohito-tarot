@@ -37,13 +37,13 @@ body {
 
 /* 初期状態：ボタン文字や星のない、カード無しの真っ新な背景 */
 .app.init-bg {
-  background: url('../images/app_bg_clean.png?v=4') no-repeat center center;
+  background: url('../images/app_bg_clean.png?v=5') no-repeat center center;
   background-size: 100% 100%;
 }
 
 /* 結果表示時：モックアップ本来の、ボタン枠や星枠が描かれた背景 */
 .app.result-bg {
-  background: url('../images/app_bg_clean.png?v=4') no-repeat center center;
+  background: url('../images/app_bg_clean.png?v=5') no-repeat center center;
   background-size: 100% 100%;
 }
 
@@ -262,7 +262,7 @@ body {
 /* ========== 星評価（今日の恋愛運）位置を少し上に移動 ========== */
 .love-fortune {
   position: absolute;
-  top: 72.9%;
+  top: 76.2%;
   left: 18%;
   width: 64%;
   text-align: center;
