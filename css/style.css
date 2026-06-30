@@ -401,11 +401,27 @@ body {
 
 .stores-link-container {
   position: absolute;
-  top: 93.35%;
+  top: 93.85%;
   left: 0;
   width: 100%;
   text-align: center;
   z-index: 20;
+}
+.stores-link-container::before,
+.stores-link-container::after {
+  content: '';
+  position: absolute;
+  left: 28%;
+  width: 44%;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(201, 168, 76, 0), rgba(201, 168, 76, 0.75), rgba(201, 168, 76, 0));
+  pointer-events: none;
+}
+.stores-link-container::before {
+  top: -3px;
+}
+.stores-link-container::after {
+  bottom: -3px;
 }
 .stores-link {
   display: inline-flex;
