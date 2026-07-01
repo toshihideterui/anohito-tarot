@@ -377,12 +377,7 @@ body {
 
 /* ========== 履歴リンク 位置を少し上に移動し、白文字に戻す ========== */
 .history-link-container {
-  position: absolute;
-  top: 95.35%;
-  left: 0;
-  width: 100%;
-  text-align: center;
-  z-index: 20;
+  display: none;
 }
 .history-link {
   color: #e5c46c;
@@ -403,7 +398,7 @@ body {
 
 .stores-link-container {
   position: absolute;
-  top: 92.85%;
+  top: 93.25%;
   left: 0;
   width: 100%;
   text-align: center;
@@ -413,15 +408,15 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 18px;
-  padding: 1px 14px;
+  min-height: 26px;
+  padding: 1px 18px;
   border: none;
   border-radius: 0;
   background: transparent;
   color: #e5c46c;
-  font-size: 12px;
+  font-size: 18px;
   font-weight: 300;
-  letter-spacing: 1.2px;
+  letter-spacing: 1.5px;
   line-height: 1.25;
   text-decoration: none;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
@@ -541,7 +536,7 @@ body {
     letter-spacing: 1px;
   }
   .stores-link {
-    font-size: 11px;
+    font-size: 16px;
     letter-spacing: 1px;
   }
 }
