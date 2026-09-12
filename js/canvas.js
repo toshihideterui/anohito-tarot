@@ -1,82 +1,146 @@
 /**
  * canvas.js
  * -----------------------------------
- * 背景の星空アニメーション（Canvas）
- * ※カード画像は実画像ファイルを使用するため、Canvas描画は背景のみ
+ * 白龍・桜テーマ用の花びらアニメーション
+ * 文字の安全地帯は描画量を抑え、読みやすさを優先する
  * -----------------------------------
  */
 
 (function initBgCanvas() {
   const canvas = document.getElementById('bgCanvas');
-  const ctx = canvas.getContext('2d');
+  if (!canvas) return;
 
-  let W, H;
-  const stars   = [];
-  const nebulas = [];
-  const STAR_COUNT = 120;
+  const ctx = canvas.getContext('2d');
+  const app = document.getElementById('appContainer');
+  let W = 0;
+  let H = 0;
+  let dpr = 1;
+  const petals = [];
+  const sparkles = [];
 
   function resize() {
-    W = canvas.width  = window.innerWidth;
-    H = canvas.height = window.innerHeight;
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = window.innerWidth;
+    H = window.innerHeight;
+    canvas.width = Math.floor(W * dpr);
+    canvas.height = Math.floor(H * dpr);
+    canvas.style.width = `${W}px`;
+    canvas.style.height = `${H}px`;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    initParticles();
   }
 
-  function initStars() {
-    stars.length = 0;
-    for (let i = 0; i < STAR_COUNT; i++) {
-      stars.push({
-        x:     Math.random() * W,
-        y:     Math.random() * H,
-        r:     Math.random() * 1.2 + 0.2,
-        a:     Math.random(),
-        da:    (Math.random() * 0.004 + 0.001) * (Math.random() < 0.5 ? 1 : -1),
-        speed: Math.random() * 0.08 + 0.02,
+  function petalCount() {
+    return W < 520 ? 24 : 42;
+  }
+
+  function resetPetal(p, initial = false) {
+    const fromLeft = Math.random() < 0.5;
+    const sideBand = W * (Math.random() * 0.22);
+    p.x = fromLeft ? -30 + sideBand : W + 30 - sideBand;
+    p.y = initial ? Math.random() * H : -40 - Math.random() * 120;
+    p.size = 7 + Math.random() * 12;
+    p.vx = (fromLeft ? 1 : -1) * (0.25 + Math.random() * 0.55);
+    p.vy = 0.55 + Math.random() * 1.0;
+    p.swing = Math.random() * Math.PI * 2;
+    p.swingSpeed = 0.018 + Math.random() * 0.025;
+    p.rotation = Math.random() * Math.PI * 2;
+    p.spin = (Math.random() - 0.5) * 0.035;
+    p.alpha = 0.22 + Math.random() * 0.36;
+  }
+
+  function initParticles() {
+    petals.length = 0;
+    sparkles.length = 0;
+
+    for (let i = 0; i < petalCount(); i++) {
+      const petal = {};
+      resetPetal(petal, true);
+      petals.push(petal);
+    }
+
+    for (let i = 0; i < 36; i++) {
+      sparkles.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: Math.random() * 1.4 + 0.4,
+        a: Math.random() * 0.5,
+        da: (Math.random() * 0.006 + 0.002) * (Math.random() < 0.5 ? 1 : -1),
       });
     }
-    nebulas.length = 0;
-    for (let i = 0; i < 4; i++) {
-      nebulas.push({
-        x:     Math.random() * W,
-        y:     Math.random() * H,
-        r:     Math.random() * 180 + 80,
-        color: Math.random() < 0.5
-          ? `rgba(106,26,154,${(Math.random() * 0.06 + 0.02).toFixed(3)})`
-          : `rgba(30,8,80,${(Math.random() * 0.08 + 0.02).toFixed(3)})`,
-      });
+  }
+
+  function isSafeZone(x, y) {
+    if (!app) return false;
+    const rect = app.getBoundingClientRect();
+    if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) return false;
+
+    const rx = (x - rect.left) / rect.width;
+    const ry = (y - rect.top) / rect.height;
+
+    const inTitle = rx > 0.04 && rx < 0.96 && ry > 0.05 && ry < 0.22;
+    const inCardText = rx > 0.29 && rx < 0.71 && ry > 0.42 && ry < 0.62;
+    const inResultControls = rx > 0.08 && rx < 0.92 && ry > 0.74 && ry < 0.99;
+    return inTitle || inCardText || inResultControls;
+  }
+
+  function drawPetal(p) {
+    if (isSafeZone(p.x, p.y)) return;
+
+    ctx.save();
+    ctx.translate(p.x, p.y);
+    ctx.rotate(p.rotation);
+    ctx.scale(1, 0.62);
+
+    const grad = ctx.createRadialGradient(0, 0, 1, 0, 0, p.size);
+    grad.addColorStop(0, `rgba(255,255,255,${Math.min(p.alpha + 0.18, 0.7)})`);
+    grad.addColorStop(0.46, `rgba(255,185,215,${p.alpha})`);
+    grad.addColorStop(1, `rgba(255,122,180,${p.alpha * 0.5})`);
+
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.moveTo(0, -p.size);
+    ctx.bezierCurveTo(p.size * 0.8, -p.size * 0.45, p.size * 0.62, p.size * 0.55, 0, p.size);
+    ctx.bezierCurveTo(-p.size * 0.62, p.size * 0.55, -p.size * 0.8, -p.size * 0.45, 0, -p.size);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function drawSparkles() {
+    for (const s of sparkles) {
+      s.a += s.da;
+      if (s.a > 0.55 || s.a < 0.08) s.da *= -1;
+
+      if (isSafeZone(s.x, s.y)) continue;
+
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,248,251,${s.a.toFixed(3)})`;
+      ctx.fill();
     }
   }
 
   function draw() {
     ctx.clearRect(0, 0, W, H);
+    drawSparkles();
 
-    // 星雲
-    for (const n of nebulas) {
-      const grad = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r);
-      grad.addColorStop(0, n.color);
-      grad.addColorStop(1, 'transparent');
-      ctx.fillStyle = grad;
-      ctx.beginPath();
-      ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-      ctx.fill();
-    }
+    for (const p of petals) {
+      p.swing += p.swingSpeed;
+      p.rotation += p.spin;
+      p.x += p.vx + Math.sin(p.swing) * 0.7;
+      p.y += p.vy;
 
-    // 星
-    for (const s of stars) {
-      s.a += s.da;
-      if (s.a > 1 || s.a < 0) s.da *= -1;
-      s.y += s.speed;
-      if (s.y > H) { s.y = 0; s.x = Math.random() * W; }
+      if (p.y > H + 60 || p.x < -100 || p.x > W + 100) {
+        resetPetal(p);
+      }
 
-      ctx.beginPath();
-      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(201,168,76,${(s.a * 0.8).toFixed(3)})`;
-      ctx.fill();
+      drawPetal(p);
     }
 
     requestAnimationFrame(draw);
   }
 
-  window.addEventListener('resize', () => { resize(); initStars(); });
+  window.addEventListener('resize', resize);
   resize();
-  initStars();
   draw();
 })();

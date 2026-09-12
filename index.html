@@ -9,7 +9,7 @@
 <meta property="og:description" content="タロットカードがあなたの恋の悩みに答えます。">
 <meta property="og:type" content="website">
 <title>あの人の気持ち鑑定｜タロット占い</title>
-<link rel="stylesheet" href="css/style.css?v=42">
+<link rel="stylesheet" href="css/style.css?v=44">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200;300;400;700&family=Cinzel+Decorative:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -19,16 +19,21 @@
 <div class="app init-bg" id="appContainer">
   <!-- 占いメインセクション -->
   <div class="main-section">
+    <div class="title-area" aria-label="あの人の気持ち">
+      <h1>あの人の気持ち</h1>
+      <p>タロットカードがあなたに伝えたいこと</p>
+    </div>
+
     <!-- 3Dフリップカード（中央のカード枠のみが回転する。二重枠を解消） -->
     <div class="card-scene" id="cardScene">
       <div class="card-flipper" id="cardFlipper">
         <!-- 表面：切り抜いた正しいカード裏面 (omote.pngから切り出したもの) -->
         <div class="card-face card-front" id="cardFrontFace">
-          <img src="images/card_back_single.png?v=17" alt="カードの裏面">
+          <img src="images/card_back_sakura_dragon.png?v=1" alt="カードの裏面">
         </div>
         <!-- 裏面：card_face_bg.png を背景に使用 -->
         <div class="card-face card-back-face" id="cardBackFace">
-          <img class="card-bg-img" src="images/card_face_bg.png?v=24" alt="" aria-hidden="true">
+          <img class="card-bg-img" src="images/card_face_sakura_dragon.png?v=1" alt="" aria-hidden="true">
           <!-- 中：AIメッセージ（可変） -->
           <div class="card-main-message" id="cardMainMessage">あなたのことをもっと知りたいと思っています</div>
           <!-- 下：カード名（可変） -->
@@ -41,7 +46,7 @@
         </div>
       </div>
       <div class="result-card-panel" id="resultCardPanel" aria-hidden="true">
-        <img class="result-card-bg" src="images/card_face_bg.png?v=26" alt="" aria-hidden="true">
+        <img class="result-card-bg" src="images/card_face_sakura_dragon.png?v=1" alt="" aria-hidden="true">
         <div class="result-card-message" id="resultCardMessage"></div>
         <div class="result-card-name-area">
           <div class="card-name-en" id="resultCardNameEn"></div>

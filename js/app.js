@@ -28,6 +28,10 @@ const loadingText        = document.getElementById('loadingText');
 const loveFortune        = document.getElementById('loveFortune');
 const starsRow           = document.getElementById('starsRow');
 const storesLink         = document.getElementById('storesLink');
+const historyLink        = document.getElementById('historyLink');
+const modalOverlay       = document.getElementById('modalOverlay');
+const modalClose         = document.getElementById('modalClose');
+const historyList        = document.getElementById('historyList');
 const debugToast         = document.getElementById('debugToast');
 
 // ========== 状態変数 ==========
@@ -39,6 +43,13 @@ function init() {
   cardScene.addEventListener('click', handleInvoke);
   invokeBtn.addEventListener('click', handleInvoke);
   againBtn.addEventListener('click', handleReset);
+  if (historyLink) historyLink.addEventListener('click', openHistory);
+  if (modalClose) modalClose.addEventListener('click', closeHistory);
+  if (modalOverlay) {
+    modalOverlay.addEventListener('click', (e) => {
+      if (e.target === modalOverlay) closeHistory();
+    });
+  }
   if (storesLink && CONFIG.STORES_URL) {
     storesLink.href = CONFIG.STORES_URL;
   }
@@ -75,6 +86,13 @@ async function handleInvoke() {
 
   // メッセージと結果追加要素を表示
   showResult(card, isReversed, message);
+  saveHistory({
+    date: new Date().toLocaleString('ja-JP'),
+    cardEn: card.en,
+    cardJa: card.ja,
+    reversed: isReversed,
+    message,
+  });
 
   loadingInline.classList.remove('show');
   setBusy(false);
@@ -246,6 +264,7 @@ function getHistory() {
 }
 
 function openHistory() {
+  if (!modalOverlay || !historyList) return;
   const history = getHistory();
   historyList.innerHTML = history.length === 0
     ? '<div class="history-empty">まだ鑑定記録がありません</div>'
@@ -259,6 +278,7 @@ function openHistory() {
 }
 
 function closeHistory() {
+  if (!modalOverlay) return;
   modalOverlay.classList.remove('show');
 }
 

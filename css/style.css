@@ -1,73 +1,132 @@
-* { margin:0; padding:0; box-sizing:border-box; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --ink: #4b0732;
+  --deep: #240d35;
+  --sakura: #ffd6e6;
+  --pearl: #fff8fb;
+  --gold: #c69352;
+  --gold-soft: #f6d9a6;
+}
 
 body {
-  background: #090314;
-  color: #e8dcc0;
-  font-family: 'Noto Serif JP', serif;
-  font-weight: 300;
   min-height: 100vh;
+  padding: max(8px, env(safe-area-inset-top)) 8px max(14px, env(safe-area-inset-bottom));
   display: flex;
   align-items: flex-start;
   justify-content: center;
   overflow-x: hidden;
   overflow-y: auto;
-  padding: max(8px, env(safe-area-inset-top)) 8px max(12px, env(safe-area-inset-bottom));
+  color: var(--ink);
+  font-family: 'Noto Serif JP', serif;
+  font-weight: 300;
+  background:
+    radial-gradient(circle at 50% 18%, rgba(255, 239, 248, 0.92), rgba(246, 196, 226, 0.42) 30%, transparent 58%),
+    linear-gradient(180deg, #fff5fb 0%, #ead9ff 45%, #b593cf 100%);
 }
 
 #bgCanvas {
   position: fixed;
   inset: 0;
-  z-index: 0;
+  z-index: 2;
   pointer-events: none;
+  opacity: 0.8;
+  mix-blend-mode: screen;
 }
 
-/* ========== アプリコンテナ ========== */
 .app {
   position: relative;
   z-index: 1;
   width: 100%;
   max-width: min(440px, calc(100vw - 16px));
-  /* 背景画像 1024x1536 に合わせて端の装飾が切れないようにする */
   aspect-ratio: 2 / 3;
   margin: 0 auto;
-  box-shadow: 0 0 50px rgba(0, 0, 0, 0.9), 0 0 100px rgba(106, 26, 154, 0.3);
   overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  border-radius: 18px;
+  box-shadow:
+    0 18px 55px rgba(80, 28, 80, 0.28),
+    0 0 70px rgba(255, 172, 213, 0.36);
   transition: background-image 0.4s ease;
 }
 
-/* 初期状態：ボタン文字や星のない、カード無しの真っ新な背景 */
-.app.init-bg {
-  background: url('../images/app_bg_clean.png?v=5') no-repeat center center;
-  background-size: 100% 100%;
-}
-
-/* 結果表示時：モックアップ本来の、ボタン枠や星枠が描かれた背景 */
+.app.init-bg,
 .app.result-bg {
-  background: url('../images/app_bg_clean.png?v=5') no-repeat center center;
+  background: url('../images/sakura_dragon_bg.png?v=1') no-repeat center center;
   background-size: 100% 100%;
 }
 
-#appHeader {
-  display: none;
+.app::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 50% 18%, rgba(255, 255, 255, 0.76) 0 22%, rgba(255, 242, 249, 0.36) 35%, transparent 56%),
+    radial-gradient(ellipse at 50% 55%, rgba(255, 255, 255, 0.2) 0 24%, rgba(91, 22, 76, 0.22) 55%, transparent 76%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.2), rgba(70, 15, 74, 0.12));
 }
+
+#appHeader { display: none; }
 
 .main-section {
   position: relative;
+  z-index: 1;
   width: 100%;
   height: 100%;
 }
 
-/* ========== 中央のカードのみを配置 ========== */
+.title-area {
+  position: absolute;
+  top: 7.2%;
+  left: 7%;
+  width: 86%;
+  z-index: 18;
+  color: var(--ink);
+  text-align: center;
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.82),
+    0 0 18px rgba(255, 255, 255, 0.75);
+}
+
+.title-area h1 {
+  font-size: clamp(30px, 8.2vw, 48px);
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: 3px;
+}
+
+.title-area p {
+  position: relative;
+  margin-top: 12px;
+  padding-top: 11px;
+  font-size: clamp(13px, 3.4vw, 18px);
+  font-weight: 400;
+  letter-spacing: 2px;
+}
+
+.title-area p::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 19%;
+  right: 19%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(136, 62, 93, 0.42), rgba(198, 147, 82, 0.68), rgba(136, 62, 93, 0.42), transparent);
+}
+
 .card-scene {
   position: absolute;
-  top: 16.8%;
-  left: 23.2%;
-  width: 53.6%;
-  height: 58.2%;
+  top: 30.4%;
+  left: 26%;
+  width: 48%;
+  height: 48%;
+  z-index: 15;
   perspective: 1200px;
   cursor: pointer;
-  z-index: 10;
 }
+
 .card-scene.is-disabled {
   pointer-events: none;
   cursor: wait;
@@ -80,122 +139,113 @@ body {
   transform-style: flat;
   transition: transform 0.45s ease, filter 0.45s ease;
 }
+
 .card-flipper.flipped {
   transform: scale(1.015);
-  filter: brightness(1.06);
+  filter: brightness(1.05);
 }
 
-.card-face {
+.card-face,
+.result-card-panel {
   position: absolute;
   inset: 0;
-  backface-visibility: visible;
-  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(201, 168, 76, 0.3);
+  border: 1px solid rgba(255, 248, 251, 0.82);
+  border-radius: 16px;
+  background: #18092a;
+  box-shadow:
+    0 0 0 2px rgba(255, 172, 213, 0.28),
+    0 10px 26px rgba(71, 13, 59, 0.42),
+    0 0 34px rgba(255, 201, 229, 0.58);
+  backface-visibility: visible;
 }
 
-/* 表面：切り抜いたカード裏面 (二重枠にならない) */
 .card-front {
-  background: #110524;
   z-index: 3;
   opacity: 1;
   visibility: visible;
   transition: opacity 0.25s ease, visibility 0.25s ease;
 }
-.card-front img {
+
+.card-front img,
+.card-bg-img,
+.result-card-bg {
   width: 100%;
   height: 100%;
-  object-fit: cover;
   display: block;
+  object-fit: fill;
+  pointer-events: none;
 }
 
-/* 裏面：card_face_bg.png を背景に使用 */
-.card-back-face {
-  transform: none;
-  background-color: #12051f;
-  position: relative;
-  padding: 0;
+.card-back-face,
+.result-card-panel {
   z-index: 1;
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.25s ease, visibility 0.25s ease;
 }
+
 .card-flipper.flipped .card-front {
   opacity: 0;
   visibility: hidden;
 }
+
 .card-flipper.flipped .card-back-face {
   opacity: 1;
   visibility: visible;
   z-index: 4;
 }
-.card-bg-img {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  width: 100%;
-  height: 100%;
-  display: block;
-  object-fit: fill;
+
+.result-card-panel {
+  z-index: 30;
   pointer-events: none;
 }
 
-.result-card-panel {
-  position: absolute;
-  inset: 0;
-  z-index: 30;
-  opacity: 0;
-  visibility: hidden;
-  overflow: hidden;
-  border-radius: 12px;
-  border: 1px solid rgba(201, 168, 76, 0.3);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-  background: #12051f;
-  transition: opacity 0.25s ease, visibility 0.25s ease;
-  pointer-events: none;
-}
 .card-scene.result-shown .result-card-panel {
   opacity: 1;
   visibility: visible;
 }
+
 .card-scene.result-shown .card-flipper {
   opacity: 0;
   visibility: hidden;
 }
+
+.card-bg-img,
 .result-card-bg {
   position: absolute;
-  top: 1.2%;
-  left: 0;
+  inset: 0;
   z-index: 1;
-  width: 100%;
-  height: 98.8%;
-  display: block;
-  object-fit: fill;
 }
+
+.card-main-message,
 .result-card-message {
   position: absolute;
   z-index: 2;
   top: 23.5%;
-  right: 10%;
+  right: 9%;
   bottom: 20%;
-  left: 10%;
+  left: 9%;
   padding: 0 6%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
+  color: #fff;
   font-size: 14px;
   font-weight: 700;
-  line-height: 1.66;
+  line-height: 1.68;
   text-align: center;
-  text-shadow: 0 2px 10px rgba(0,0,0,0.9), 0 0 20px rgba(106,26,154,0.6);
+  text-shadow:
+    0 2px 10px rgba(0, 0, 0, 0.9),
+    0 0 18px rgba(94, 18, 111, 0.7);
   overflow-wrap: anywhere;
 }
+
+.card-bottom-area,
 .result-card-name-area {
   position: absolute;
   z-index: 2;
-  bottom: 5.5%;
+  bottom: 11.5%;
   left: 0;
   width: 100%;
   display: flex;
@@ -203,100 +253,77 @@ body {
   align-items: center;
 }
 
-.card-top-area { display: none; }
-
-.card-main-message {
-  position: absolute;
-  z-index: 2;
-  top: 23.5%;
-  right: 10%;
-  bottom: 20%;
-  left: 10%;
-  font-size: 14px;
-  font-weight: 700;
-  line-height: 1.66;
-  color: #ffffff;
-  text-align: center;
-  text-shadow: 0 2px 10px rgba(0,0,0,0.9), 0 0 20px rgba(106,26,154,0.6);
-  padding: 0 6%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow-wrap: anywhere;
-}
-
-.card-bottom-area {
-  position: absolute;
-  z-index: 2;
-  bottom: 5.5%;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.card-back-face .card-arcana-img { display: none; }
-
 .card-name-area {
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
 }
+
 .card-name-en {
+  margin-bottom: 2px;
+  color: var(--ink);
   font-family: 'Cinzel Decorative', cursive;
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 2px;
-  color: #f0d080;
-  text-shadow: 0 0 8px rgba(240,208,128,0.6);
-  margin-bottom: 2px;
+  text-align: center;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8), 0 0 8px rgba(255, 255, 255, 0.7);
 }
+
 .card-name-ja {
+  color: #7d174e;
   font-size: 9px;
-  color: #c9a84c;
   letter-spacing: 2px;
   text-align: center;
   text-indent: 2px;
 }
 
-/* ========== 星評価（今日の恋愛運）位置を少し上に移動 ========== */
+.card-top-area,
+.card-back-face .card-arcana-img {
+  display: none;
+}
+
 .love-fortune {
   position: absolute;
-  top: 76.2%;
+  top: 78.6%;
   left: 18%;
   width: 64%;
+  z-index: 16;
+  padding: 3px 0 4px;
   text-align: center;
   opacity: 0;
   transform: translateY(10px);
   transition: opacity 0.8s ease, transform 0.8s ease;
-  z-index: 15;
-  padding: 3px 0 4px;
 }
+
 .love-fortune.show {
   opacity: 1;
   transform: translateY(0);
 }
+
 .love-label {
-  font-size: 11px;
-  letter-spacing: 3px;
-  color: #7a6230;
   margin-bottom: 2px;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
-}
-.stars-row {
-  font-size: 19px;
-  letter-spacing: 5px;
-  color: #f0d080;
-  text-shadow: 0 0 8px rgba(240, 208, 128, 0.6);
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.8), 0 0 12px rgba(255,255,255,0.75);
 }
 
-/* ========== アクションボタン（左右完全半円のカプセル型ゴールド細枠ボタン） ========== */
+.stars-row {
+  color: #b66f1c;
+  font-size: 19px;
+  letter-spacing: 5px;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.75), 0 0 10px rgba(255, 219, 145, 0.75);
+}
+
 .action-container {
   position: absolute;
-  top: 85.8%;
-  left: 18%;
-  width: 64%;
-  height: 7.2%;
+  top: 84.2%;
+  left: 12%;
+  width: 76%;
+  height: 8.4%;
   z-index: 20;
   display: flex;
   align-items: center;
@@ -306,214 +333,227 @@ body {
 .tarot-btn {
   width: 100%;
   height: 100%;
-  box-sizing: border-box;
-  border-radius: 100vh !important;
-  border: none !important;
-  background: transparent !important;
-  background-size: auto !important;
-  box-shadow: none !important;
-  color: #ffffff !important;
-  font-family: inherit;
-  font-size: 15px;
-  font-weight: 300;
-  letter-spacing: 4px;
-  cursor: pointer;
+  border: 1px solid rgba(198, 147, 82, 0.65);
+  border-radius: 999px;
   outline: none;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-top: 2px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0 18px 2px;
+  color: var(--ink);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,221,236,0.88)),
+    radial-gradient(circle at 50% 0%, rgba(255,255,255,0.85), transparent 48%);
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 255, 255, 0.72),
+    0 0 0 3px rgba(255, 185, 218, 0.28),
+    0 10px 24px rgba(84, 20, 80, 0.28),
+    0 0 28px rgba(255, 182, 220, 0.62);
+  font-family: inherit;
+  font-size: clamp(20px, 5.7vw, 30px);
+  font-weight: 700;
+  letter-spacing: 5px;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.84);
+  transition: filter 0.25s ease, transform 0.25s ease, opacity 0.25s ease;
 }
-.tarot-btn::before, .tarot-btn::after { display: none; }
-.tarot-btn:hover {
-  transform: none;
-  filter: brightness(1.08);
-}
+
+.tarot-btn:hover { filter: brightness(1.06); }
+
 .tarot-btn:active { transform: scale(0.99); }
+
 .tarot-btn:disabled {
-  opacity: 0.5;
+  opacity: 0.58;
   cursor: not-allowed;
-  transform: none;
-  filter: grayscale(0.2);
+  filter: grayscale(0.15);
 }
 
-/* 初期状態では「もう一度占う」を非表示にする */
-.tarot-btn.again-btn {
-  display: none;
-  color: #ffffff !important;
-}
+.tarot-btn.again-btn { display: none; }
 
-/* ローディング表示の位置調整 */
 .loading-inline {
   display: none;
   position: absolute;
-  top: -85px;
+  top: -78px;
   left: 0;
   width: 100%;
   text-align: center;
 }
-.loading-inline.show {
-  display: block;
-}
+
+.loading-inline.show { display: block; }
+
 .loading-inline .orb {
-  width: 28px;
-  height: 28px;
-  margin: 0 auto 6px;
+  width: 30px;
+  height: 30px;
+  margin: 0 auto 7px;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, rgba(240, 208, 128, 0.9), rgba(106, 26, 154, 0.6));
+  background: radial-gradient(circle at 35% 35%, #fff, #ffc7df 46%, #a56ab7 100%);
   animation: orbPulse 1.5s ease-in-out infinite;
 }
+
 @keyframes orbPulse {
-  0%, 100% { transform: scale(1); box-shadow: 0 0 15px rgba(201, 168, 76, 0.4); }
-  50% { transform: scale(1.15); box-shadow: 0 0 30px rgba(106, 26, 154, 0.7); }
-}
-.loading-inline .lt {
-  font-size: 11px;
-  letter-spacing: 2px;
-  color: #7a7060;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+  0%, 100% { transform: scale(1); box-shadow: 0 0 16px rgba(255, 174, 214, 0.5); }
+  50% { transform: scale(1.15); box-shadow: 0 0 34px rgba(255, 174, 214, 0.88); }
 }
 
-/* ========== 履歴リンク 位置を少し上に移動し、白文字に戻す ========== */
-.history-link-container {
-  display: none;
-}
-.history-link {
-  color: #e5c46c;
+.loading-inline .lt {
+  color: var(--ink);
   font-size: 12px;
-  font-weight: 300;
-  letter-spacing: 1.2px;
-  cursor: pointer;
-  display: inline-block;
-  padding: 1px 14px;
-  line-height: 1.25;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
-  transition: color 0.3s ease, text-shadow 0.3s ease;
-}
-.history-link:hover {
-  color: #c9a84c;
-  text-shadow: 0 0 8px rgba(201, 168, 76, 0.6);
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.8), 0 0 14px rgba(255,255,255,0.9);
 }
 
 .stores-link-container {
   position: absolute;
-  top: 93.25%;
+  top: 94.0%;
   left: 0;
   width: 100%;
-  text-align: center;
   z-index: 20;
+  text-align: center;
 }
-.stores-link {
+
+.stores-link,
+.history-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 26px;
-  padding: 1px 18px;
-  border: none;
-  border-radius: 0;
-  background: transparent;
-  color: #e5c46c;
-  font-size: 18px;
-  font-weight: 300;
-  letter-spacing: 1.5px;
-  line-height: 1.25;
+  color: var(--ink);
   text-decoration: none;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
+  font-weight: 700;
+  line-height: 1.25;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.9), 0 0 10px rgba(255,255,255,0.74);
+  cursor: pointer;
+  transition: color 0.25s ease, transform 0.25s ease;
 }
-.stores-link::after {
-  content: '  >';
+
+.stores-link {
+  min-height: 24px;
+  padding: 0 12px;
+  font-size: clamp(13px, 3.5vw, 18px);
+  letter-spacing: 1.2px;
 }
+
+.stores-link::after { content: '  >'; }
+
+.history-link-container {
+  position: absolute;
+  top: 97.2%;
+  left: 0;
+  width: 100%;
+  z-index: 20;
+  text-align: center;
+}
+
+.history-link {
+  padding: 0 10px;
+  font-size: clamp(10px, 3vw, 13px);
+  letter-spacing: 1px;
+}
+
+.stores-link:hover,
+.history-link:hover {
+  color: #7d174e;
+  transform: translateY(-1px);
+}
+
 .stores-link:focus-visible,
 .history-link:focus-visible,
 .tarot-btn:focus-visible,
 .modal-close:focus-visible {
-  outline: 2px solid rgba(240, 208, 128, 0.8);
+  outline: 2px solid rgba(126, 20, 82, 0.78);
   outline-offset: 3px;
 }
 
-/* ========== カードの光アニメーション ========== */
 @keyframes cardGlow {
-  0% { box-shadow: 0 0 15px rgba(201, 168, 76, 0.2); }
-  50% { box-shadow: 0 0 45px rgba(201, 168, 76, 0.6), 0 0 80px rgba(106, 26, 154, 0.4); }
-  100% { box-shadow: 0 0 15px rgba(201, 168, 76, 0.2); }
-}
-.glow-anim {
-  animation: cardGlow 1.8s ease-in-out infinite;
+  0% { box-shadow: 0 0 16px rgba(255, 172, 213, 0.32); }
+  50% { box-shadow: 0 0 46px rgba(255, 172, 213, 0.82), 0 0 82px rgba(255, 255, 255, 0.42); }
+  100% { box-shadow: 0 0 16px rgba(255, 172, 213, 0.32); }
 }
 
-/* ========== 履歴モーダル（飛び出し防止対応） ========== */
+.glow-anim { animation: cardGlow 1.8s ease-in-out infinite; }
+
 .modal-overlay {
   display: none !important;
   position: fixed;
   inset: 0;
-  background: rgba(5, 2, 15, 0.9);
   z-index: 200;
   align-items: center;
   justify-content: center;
   padding: 20px;
+  background: rgba(55, 20, 58, 0.54);
+  backdrop-filter: blur(8px);
 }
-.modal-overlay.show {
-  display: flex !important;
-}
+
+.modal-overlay.show { display: flex !important; }
+
 .modal {
-  background: linear-gradient(160deg, #180633, #0d031c);
-  border: 1px solid rgba(201, 168, 76, 0.4);
-  border-radius: 12px;
-  padding: 22px 20px;
   width: 100%;
-  max-width: 380px;
+  max-width: 390px;
   max-height: 75vh;
   overflow-y: auto;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+  padding: 22px 20px;
+  border: 1px solid rgba(198, 147, 82, 0.45);
+  border-radius: 18px;
+  background: linear-gradient(160deg, rgba(255, 250, 253, 0.97), rgba(255, 224, 239, 0.94));
+  box-shadow: 0 18px 42px rgba(80, 28, 80, 0.34);
+  color: var(--ink);
 }
+
 .modal-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 15px;
-  border-bottom: 1px solid rgba(201, 168, 76, 0.2);
   padding-bottom: 10px;
+  border-bottom: 1px solid rgba(134, 28, 82, 0.18);
 }
+
 .modal-title {
-  font-size: 13px;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 700;
   letter-spacing: 2px;
-  color: #c9a84c;
 }
+
 .modal-close {
-  background: none;
   border: none;
-  color: #7a7060;
+  background: none;
+  color: #7d174e;
   font-size: 18px;
   cursor: pointer;
 }
+
 .history-item {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   padding: 10px 0;
+  border-bottom: 1px solid rgba(134, 28, 82, 0.12);
 }
-.history-item:last-child {
-  border-bottom: none;
-}
+
+.history-item:last-child { border-bottom: none; }
+
 .history-date {
+  margin-bottom: 3px;
+  color: rgba(75, 7, 50, 0.66);
   font-size: 10px;
-  color: #7a6230;
-  margin-bottom: 3px;
 }
+
 .history-card {
-  font-size: 11px;
-  color: #c9a84c;
   margin-bottom: 3px;
+  color: #7d174e;
+  font-size: 12px;
+  font-weight: 700;
 }
+
 .history-msg {
+  color: var(--deep);
   font-size: 12px;
-  color: #e8dcc0;
-  line-height: 1.6;
+  line-height: 1.65;
 }
+
 .history-empty {
-  text-align: center;
-  color: #7a7060;
-  font-size: 12px;
   padding: 30px 0;
+  color: rgba(75, 7, 50, 0.62);
+  font-size: 12px;
+  text-align: center;
 }
 
 @media (max-width: 360px) {
@@ -521,22 +561,38 @@ body {
     padding-left: 4px;
     padding-right: 4px;
   }
-  .tarot-btn {
-    font-size: 13px;
-    letter-spacing: 2.5px;
+
+  .title-area { top: 7.4%; }
+
+  .title-area h1 {
+    font-size: 29px;
+    letter-spacing: 2px;
   }
+
+  .title-area p {
+    margin-top: 9px;
+    font-size: 12px;
+    letter-spacing: 1.4px;
+  }
+
+  .card-scene {
+    top: 30.8%;
+    left: 25%;
+    width: 50%;
+    height: 50%;
+  }
+
   .card-main-message,
   .result-card-message {
     font-size: 12px;
-    line-height: 1.75;
+    line-height: 1.74;
     padding: 0 7%;
   }
-  .history-link {
-    font-size: 11px;
-    letter-spacing: 1px;
+
+  .tarot-btn {
+    font-size: 18px;
+    letter-spacing: 3px;
   }
-  .stores-link {
-    font-size: 16px;
-    letter-spacing: 1px;
-  }
+
+  .stores-link { font-size: 13px; }
 }
