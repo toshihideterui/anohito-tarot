@@ -373,7 +373,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding: 18.5% 9.5% 8.5%;
+  padding: 16.5% 9.5% 8.5%;
   border: none;
   border-radius: 9px;
   background: url('../images/result_reading_panel.png?v=1') center center / 100% 100% no-repeat;
@@ -411,6 +411,7 @@ body {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
+  pointer-events: auto;
 }
 
 .reading-divider {
@@ -450,9 +451,9 @@ body {
 
 .reading-message {
   width: 100%;
-  margin-top: 5px;
+  margin-top: 2px;
   color: #37213e;
-  font-size: clamp(16px, 4.5vw, 20px);
+  font-size: clamp(15px, 4.2vw, 19px);
   font-weight: 700;
   line-height: 1.68;
   letter-spacing: 0.3px;
