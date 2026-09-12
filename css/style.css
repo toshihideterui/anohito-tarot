@@ -11,9 +11,10 @@
 
 body {
   min-height: 100vh;
-  padding: max(8px, env(safe-area-inset-top)) 8px max(14px, env(safe-area-inset-bottom));
+  min-height: 100svh;
+  padding: 0;
   display: flex;
-  align-items: flex-start;
+  align-items: stretch;
   justify-content: center;
   overflow-x: hidden;
   overflow-y: auto;
@@ -38,8 +39,9 @@ body {
   position: relative;
   z-index: 1;
   width: 100%;
-  max-width: min(440px, calc(100vw - 16px));
-  aspect-ratio: 2 / 3;
+  max-width: min(440px, 100vw);
+  min-height: 100vh;
+  min-height: 100svh;
   margin: 0 auto;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.65);
@@ -53,7 +55,7 @@ body {
 .app.init-bg,
 .app.result-bg {
   background: url('../images/sakura_dragon_bg.png?v=1') no-repeat center center;
-  background-size: 100% 100%;
+  background-size: cover;
 }
 
 .app::before {
@@ -118,10 +120,11 @@ body {
 
 .card-scene {
   position: absolute;
-  top: 30.4%;
-  left: 26%;
-  width: 48%;
-  height: 48%;
+  top: 30%;
+  left: 50%;
+  width: min(54%, 245px);
+  aspect-ratio: 2 / 3;
+  transform: translateX(-50%);
   z-index: 15;
   perspective: 1200px;
   cursor: pointer;
@@ -286,7 +289,7 @@ body {
 
 .love-fortune {
   position: absolute;
-  top: 78.6%;
+  top: 77.4%;
   left: 18%;
   width: 64%;
   z-index: 16;
@@ -320,7 +323,7 @@ body {
 
 .action-container {
   position: absolute;
-  top: 84.2%;
+  top: 82.8%;
   left: 12%;
   width: 76%;
   height: 8.4%;
@@ -405,7 +408,7 @@ body {
 
 .stores-link-container {
   position: absolute;
-  top: 94.0%;
+  top: 91.8%;
   left: 0;
   width: 100%;
   z-index: 20;
@@ -437,7 +440,7 @@ body {
 
 .history-link-container {
   position: absolute;
-  top: 97.2%;
+  top: 94.9%;
   left: 0;
   width: 100%;
   z-index: 20;
@@ -557,11 +560,6 @@ body {
 }
 
 @media (max-width: 360px) {
-  body {
-    padding-left: 4px;
-    padding-right: 4px;
-  }
-
   .title-area { top: 7.4%; }
 
   .title-area h1 {
@@ -576,10 +574,8 @@ body {
   }
 
   .card-scene {
-    top: 30.8%;
-    left: 25%;
-    width: 50%;
-    height: 50%;
+    top: 30.4%;
+    width: 56%;
   }
 
   .card-main-message,
