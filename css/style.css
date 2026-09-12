@@ -81,9 +81,9 @@ body {
 
 .title-area {
   position: absolute;
-  top: 7.2%;
-  left: 7%;
-  width: 86%;
+  top: 9.8%;
+  left: 4%;
+  width: 92%;
   z-index: 18;
   color: var(--ink);
   text-align: center;
@@ -93,41 +93,55 @@ body {
 }
 
 .title-area h1 {
-  font-size: clamp(30px, 8.2vw, 48px);
+  font-size: clamp(36px, 10.7vw, 52px);
   font-weight: 400;
-  line-height: 1.08;
-  letter-spacing: 3px;
+  line-height: 1;
+  letter-spacing: 2px;
+  white-space: nowrap;
 }
 
 .title-area p {
   position: relative;
   margin-top: 12px;
-  padding-top: 11px;
-  font-size: clamp(13px, 3.4vw, 18px);
+  padding-top: 9px;
+  font-size: clamp(14px, 3.9vw, 19px);
   font-weight: 400;
-  letter-spacing: 2px;
+  letter-spacing: 1.5px;
 }
 
 .title-area p::before {
   content: '';
   position: absolute;
   top: 0;
-  left: 19%;
-  right: 19%;
+  left: 25%;
+  right: 25%;
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(136, 62, 93, 0.42), rgba(198, 147, 82, 0.68), rgba(136, 62, 93, 0.42), transparent);
 }
 
 .card-scene {
   position: absolute;
-  top: 30%;
+  top: 31.8%;
   left: 50%;
-  width: min(54%, 245px);
+  width: min(56%, 260px);
   aspect-ratio: 2 / 3;
   transform: translateX(-50%);
   z-index: 15;
   perspective: 1200px;
   cursor: pointer;
+}
+
+.app.init-bg .card-scene {
+  animation: cardFloat 4.8s ease-in-out infinite;
+}
+
+.app.result-bg .card-scene {
+  top: 29.8%;
+  width: min(49%, 230px);
+}
+
+.app.result-bg .love-fortune {
+  top: 75.3%;
 }
 
 .card-scene.is-disabled {
@@ -161,6 +175,21 @@ body {
     0 10px 26px rgba(71, 13, 59, 0.42),
     0 0 34px rgba(255, 201, 229, 0.58);
   backface-visibility: visible;
+}
+
+.card-face::after,
+.result-card-panel::after {
+  content: '';
+  position: absolute;
+  inset: -20%;
+  z-index: 5;
+  pointer-events: none;
+  background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.28) 47%, transparent 62%);
+  transform: translateX(-120%) rotate(8deg);
+}
+
+.app.init-bg .card-face::after {
+  animation: cardShine 4.2s ease-in-out infinite;
 }
 
 .card-front {
@@ -323,10 +352,10 @@ body {
 
 .action-container {
   position: absolute;
-  top: 82.8%;
-  left: 12%;
-  width: 76%;
-  height: 8.4%;
+  top: 80.6%;
+  left: 8.5%;
+  width: 83%;
+  height: 7.7%;
   z-index: 20;
   display: flex;
   align-items: center;
@@ -336,17 +365,19 @@ body {
 .tarot-btn {
   width: 100%;
   height: 100%;
-  border: 1px solid rgba(198, 147, 82, 0.65);
+  position: relative;
+  gap: 14px;
+  border: 2px solid rgba(213, 154, 94, 0.72);
   border-radius: 999px;
   outline: none;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 18px 2px;
+  padding: 0 52px 2px 70px;
   color: var(--ink);
   background:
-    linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,221,236,0.88)),
+    linear-gradient(180deg, rgba(255,255,255,0.96), rgba(255,228,240,0.92)),
     radial-gradient(circle at 50% 0%, rgba(255,255,255,0.85), transparent 48%);
   box-shadow:
     inset 0 0 0 2px rgba(255, 255, 255, 0.72),
@@ -354,11 +385,37 @@ body {
     0 10px 24px rgba(84, 20, 80, 0.28),
     0 0 28px rgba(255, 182, 220, 0.62);
   font-family: inherit;
-  font-size: clamp(20px, 5.7vw, 30px);
+  font-size: clamp(25px, 7.2vw, 34px);
   font-weight: 700;
-  letter-spacing: 5px;
+  letter-spacing: 4px;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.84);
   transition: filter 0.25s ease, transform 0.25s ease, opacity 0.25s ease;
+}
+
+.tarot-btn::before {
+  content: '';
+  position: absolute;
+  left: 22px;
+  top: 50%;
+  width: 38px;
+  height: 42px;
+  transform: translateY(-50%) rotate(-7deg);
+  border-radius: 5px;
+  background: url('../images/card_back_sakura_dragon.png?v=2') center center / cover no-repeat;
+  box-shadow:
+    0 2px 6px rgba(75, 7, 50, 0.22),
+    8px 2px 0 -4px rgba(71, 13, 59, 0.9);
+}
+
+.tarot-btn::after {
+  content: '›';
+  position: absolute;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-52%);
+  color: var(--ink);
+  font-size: 42px;
+  line-height: 1;
 }
 
 .tarot-btn:hover { filter: brightness(1.06); }
@@ -372,6 +429,11 @@ body {
 }
 
 .tarot-btn.again-btn { display: none; }
+
+.tarot-btn.again-btn::before,
+.tarot-btn.again-btn::after {
+  display: none;
+}
 
 .loading-inline {
   display: none;
@@ -413,6 +475,47 @@ body {
   width: 100%;
   z-index: 20;
   text-align: center;
+}
+
+.app.init-bg .stores-link-container,
+.app.init-bg .history-link-container,
+.app.init-bg .love-fortune {
+  display: none;
+}
+
+.app.result-bg .footer-brand {
+  display: none;
+}
+
+.footer-brand {
+  position: absolute;
+  top: 91.7%;
+  left: 11%;
+  width: 78%;
+  z-index: 19;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.96);
+  font-size: clamp(12px, 3.7vw, 17px);
+  font-weight: 400;
+  letter-spacing: 1.3px;
+  text-shadow:
+    0 1px 5px rgba(75, 7, 50, 0.58),
+    0 0 10px rgba(255, 182, 220, 0.72);
+}
+
+.footer-line {
+  flex: 1;
+  height: 1px;
+  max-width: 72px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+}
+
+.footer-mark {
+  color: #ff7eb7;
+  font-size: 15px;
 }
 
 .stores-link,
@@ -474,6 +577,17 @@ body {
 }
 
 .glow-anim { animation: cardGlow 1.8s ease-in-out infinite; }
+
+@keyframes cardFloat {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-8px); }
+}
+
+@keyframes cardShine {
+  0%, 45% { transform: translateX(-125%) rotate(8deg); opacity: 0; }
+  58% { opacity: 1; }
+  78%, 100% { transform: translateX(125%) rotate(8deg); opacity: 0; }
+}
 
 .modal-overlay {
   display: none !important;
@@ -560,22 +674,22 @@ body {
 }
 
 @media (max-width: 360px) {
-  .title-area { top: 7.4%; }
+  .title-area { top: 9.4%; }
 
   .title-area h1 {
-    font-size: 29px;
-    letter-spacing: 2px;
+    font-size: 34px;
+    letter-spacing: 1px;
   }
 
   .title-area p {
     margin-top: 9px;
     font-size: 12px;
-    letter-spacing: 1.4px;
+    letter-spacing: 1px;
   }
 
   .card-scene {
-    top: 30.4%;
-    width: 56%;
+    top: 32%;
+    width: 58%;
   }
 
   .card-main-message,
@@ -586,8 +700,21 @@ body {
   }
 
   .tarot-btn {
-    font-size: 18px;
-    letter-spacing: 3px;
+    padding-left: 58px;
+    padding-right: 44px;
+    font-size: 22px;
+    letter-spacing: 2px;
+  }
+
+  .tarot-btn::before {
+    left: 17px;
+    width: 32px;
+    height: 36px;
+  }
+
+  .tarot-btn::after {
+    right: 18px;
+    font-size: 36px;
   }
 
   .stores-link { font-size: 13px; }
