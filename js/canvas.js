@@ -18,6 +18,8 @@
   const petals = [];
   const orbitPetals = [];
   const sparkles = [];
+  const petalImage = new Image();
+  petalImage.src = 'images/petal_particle.png?v=1';
 
   function resize() {
     dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -47,7 +49,7 @@
     p.swingSpeed = 0.018 + Math.random() * 0.025;
     p.rotation = Math.random() * Math.PI * 2;
     p.spin = (Math.random() - 0.5) * 0.035;
-    p.alpha = 0.22 + Math.random() * 0.36;
+    p.alpha = 0.42 + Math.random() * 0.34;
   }
 
   function initParticles() {
@@ -72,7 +74,7 @@
         wobbleSpeed: 0.015 + Math.random() * 0.02,
         rotation: Math.random() * Math.PI * 2,
         spin: (Math.random() - 0.5) * 0.045,
-        alpha: 0.34 + Math.random() * 0.42,
+        alpha: 0.46 + Math.random() * 0.36,
       });
     }
 
@@ -107,19 +109,25 @@
     ctx.save();
     ctx.translate(p.x, p.y);
     ctx.rotate(p.rotation);
-    ctx.scale(1, 0.62);
+    ctx.globalAlpha = p.alpha;
 
-    const grad = ctx.createRadialGradient(0, 0, 1, 0, 0, p.size);
-    grad.addColorStop(0, `rgba(255,255,255,${Math.min(p.alpha + 0.18, 0.7)})`);
-    grad.addColorStop(0.46, `rgba(255,185,215,${p.alpha})`);
-    grad.addColorStop(1, `rgba(255,122,180,${p.alpha * 0.5})`);
-
-    ctx.fillStyle = grad;
-    ctx.beginPath();
-    ctx.moveTo(0, -p.size);
-    ctx.bezierCurveTo(p.size * 0.8, -p.size * 0.45, p.size * 0.62, p.size * 0.55, 0, p.size);
-    ctx.bezierCurveTo(-p.size * 0.62, p.size * 0.55, -p.size * 0.8, -p.size * 0.45, 0, -p.size);
-    ctx.fill();
+    if (petalImage.complete && petalImage.naturalWidth > 0) {
+      const w = p.size * 2.7;
+      const h = p.size * 1.75;
+      ctx.drawImage(petalImage, -w / 2, -h / 2, w, h);
+    } else {
+      ctx.scale(1, 0.62);
+      const grad = ctx.createRadialGradient(0, 0, 1, 0, 0, p.size);
+      grad.addColorStop(0, `rgba(255,255,255,${Math.min(p.alpha + 0.18, 0.7)})`);
+      grad.addColorStop(0.46, `rgba(255,185,215,${p.alpha})`);
+      grad.addColorStop(1, `rgba(255,122,180,${p.alpha * 0.5})`);
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.moveTo(0, -p.size);
+      ctx.bezierCurveTo(p.size * 0.8, -p.size * 0.45, p.size * 0.62, p.size * 0.55, 0, p.size);
+      ctx.bezierCurveTo(-p.size * 0.62, p.size * 0.55, -p.size * 0.8, -p.size * 0.45, 0, -p.size);
+      ctx.fill();
+    }
     ctx.restore();
   }
 
@@ -161,7 +169,6 @@
 
   function draw() {
     ctx.clearRect(0, 0, W, H);
-    drawSparkles();
     drawOrbitPetals();
 
     for (const p of petals) {
