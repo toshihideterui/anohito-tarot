@@ -66,26 +66,10 @@ async function handleInvoke() {
 
   const { card, isReversed } = drawCard();
 
-  loadingInline.classList.add('show');
-  if (loadingText) loadingText.textContent = '星に問いかけています…';
-
-  // 画面上のカード画像は共通画像を使う。card.image は内部情報として保持する。
-  if (cardBackImg) await loadCardImage(cardBackImg, card.image);
-
-  // ガイドタイトルとメッセージの初期セット（フリップ時にすぐ読めるようにする）
-  if (cardGuideTitle) cardGuideTitle.textContent = `― ${card.ja}の導き ―`;
-  cardMainMessage.textContent = '運命の糸を解いています…';
-  cardNameEn.textContent = '';
-  cardNameJa.textContent = '';
-  resultCardMessage.textContent = '運命の糸を解いています…';
-  resultCardNameEn.textContent = '';
-  resultCardNameJa.textContent = '';
+  if (loadingInline) loadingInline.classList.remove('show');
   if (readingPanel) readingPanel.setAttribute('aria-hidden', 'true');
   if (readingCardMeta) readingCardMeta.textContent = '';
   if (readingMessage) readingMessage.textContent = '';
-
-  await sleep(400);
-  flipCard();
 
   // AIメッセージを取得
   const message = await fetchMessage(card, isReversed);
@@ -100,7 +84,7 @@ async function handleInvoke() {
     message,
   });
 
-  loadingInline.classList.remove('show');
+  if (loadingInline) loadingInline.classList.remove('show');
   setBusy(false);
   isAnimating = false;
 }
@@ -160,6 +144,7 @@ function showResult(card, isReversed, message) {
   if (cardScene) {
     cardScene.setAttribute('aria-hidden', 'true');
   }
+  isFlipped = true;
 
   // 星評価を設定してフェードイン
   starsRow.textContent = getStars(card, isReversed);
@@ -201,7 +186,6 @@ ${isReversed
   for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
     try {
       if (attempt > 0) {
-        if (loadingText) loadingText.textContent = `星に再び問いかけています… (少し時間をおいています)`;
         await sleep(4000);
       }
 
