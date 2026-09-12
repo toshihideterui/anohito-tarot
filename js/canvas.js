@@ -16,6 +16,7 @@
   let H = 0;
   let dpr = 1;
   const petals = [];
+  const orbitPetals = [];
   const sparkles = [];
 
   function resize() {
@@ -51,12 +52,28 @@
 
   function initParticles() {
     petals.length = 0;
+    orbitPetals.length = 0;
     sparkles.length = 0;
 
     for (let i = 0; i < petalCount(); i++) {
       const petal = {};
       resetPetal(petal, true);
       petals.push(petal);
+    }
+
+    const orbitCount = W < 520 ? 26 : 40;
+    for (let i = 0; i < orbitCount; i++) {
+      orbitPetals.push({
+        angle: Math.random() * Math.PI * 2,
+        radius: 0.28 + Math.random() * 0.28,
+        size: 8 + Math.random() * 12,
+        speed: 0.004 + Math.random() * 0.006,
+        wobble: Math.random() * Math.PI * 2,
+        wobbleSpeed: 0.015 + Math.random() * 0.02,
+        rotation: Math.random() * Math.PI * 2,
+        spin: (Math.random() - 0.5) * 0.045,
+        alpha: 0.34 + Math.random() * 0.42,
+      });
     }
 
     for (let i = 0; i < 36; i++) {
@@ -120,9 +137,32 @@
     }
   }
 
+  function drawOrbitPetals() {
+    if (!app || !app.classList.contains('result-bg')) return;
+
+    const rect = app.getBoundingClientRect();
+    const cx = rect.left + rect.width * 0.5;
+    const cy = rect.top + rect.height * 0.55;
+    const base = Math.min(rect.width, rect.height) * 0.48;
+
+    for (const p of orbitPetals) {
+      p.angle += p.speed;
+      p.wobble += p.wobbleSpeed;
+      p.rotation += p.spin;
+
+      const rx = base * p.radius * 1.15;
+      const ry = base * p.radius * 0.7;
+      p.x = cx + Math.cos(p.angle) * rx + Math.sin(p.wobble) * 12;
+      p.y = cy + Math.sin(p.angle) * ry + Math.cos(p.wobble) * 8;
+
+      drawPetal(p);
+    }
+  }
+
   function draw() {
     ctx.clearRect(0, 0, W, H);
     drawSparkles();
+    drawOrbitPetals();
 
     for (const p of petals) {
       p.swing += p.swingSpeed;
