@@ -23,6 +23,9 @@ const resultCardPanel    = document.getElementById('resultCardPanel');
 const resultCardMessage  = document.getElementById('resultCardMessage');
 const resultCardNameEn   = document.getElementById('resultCardNameEn');
 const resultCardNameJa   = document.getElementById('resultCardNameJa');
+const readingPanel       = document.getElementById('readingPanel');
+const readingCardMeta    = document.getElementById('readingCardMeta');
+const readingMessage     = document.getElementById('readingMessage');
 const loadingInline      = document.getElementById('loadingInline');
 const loadingText        = document.getElementById('loadingText');
 const loveFortune        = document.getElementById('loveFortune');
@@ -77,6 +80,9 @@ async function handleInvoke() {
   resultCardMessage.textContent = '運命の糸を解いています…';
   resultCardNameEn.textContent = '';
   resultCardNameJa.textContent = '';
+  if (readingPanel) readingPanel.setAttribute('aria-hidden', 'true');
+  if (readingCardMeta) readingCardMeta.textContent = '';
+  if (readingMessage) readingMessage.textContent = '';
 
   await sleep(400);
   flipCard();
@@ -142,6 +148,18 @@ function showResult(card, isReversed, message) {
   resultCardNameJa.innerHTML = isReversed
     ? `${card.ja}<br><span style="font-size:8px;color:#e08080;letter-spacing:1px;">逆 位 置</span>`
     : card.ja;
+  if (readingCardMeta) {
+    readingCardMeta.textContent = `${card.ja}（${card.en}）${isReversed ? '【逆位置】' : '【正位置】'}`;
+  }
+  if (readingMessage) {
+    readingMessage.textContent = message;
+  }
+  if (readingPanel) {
+    readingPanel.setAttribute('aria-hidden', 'false');
+  }
+  if (cardScene) {
+    cardScene.setAttribute('aria-hidden', 'true');
+  }
 
   // 星評価を設定してフェードイン
   starsRow.textContent = getStars(card, isReversed);
@@ -242,6 +260,10 @@ function handleReset() {
   resultCardMessage.textContent = '';
   resultCardNameEn.textContent = '';
   resultCardNameJa.textContent = '';
+  if (readingPanel) readingPanel.setAttribute('aria-hidden', 'true');
+  if (readingCardMeta) readingCardMeta.textContent = '';
+  if (readingMessage) readingMessage.textContent = '';
+  if (cardScene) cardScene.setAttribute('aria-hidden', 'false');
   if (appContainer) {
     appContainer.classList.remove('result-bg');
     appContainer.classList.add('init-bg');
