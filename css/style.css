@@ -58,8 +58,8 @@ body {
 }
 
 .app.result-bg {
-  background: url('../images/result_dragon_bg.png?v=1') no-repeat center center;
-  background-size: cover;
+  background: url('../images/result_dragon_bg.png?v=1') no-repeat center top;
+  background-size: 100% 100%;
 }
 
 .app::before {
@@ -76,6 +76,10 @@ body {
 
 .app.init-bg::before {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 210, 232, 0.08));
+}
+
+.app.result-bg::before {
+  background: none;
 }
 
 #appHeader { display: none; }
