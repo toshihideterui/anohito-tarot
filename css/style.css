@@ -52,7 +52,11 @@ body {
   transition: background-image 0.4s ease;
 }
 
-.app.init-bg,
+.app.init-bg {
+  background: url('../images/init_screen_akane.png?v=1') no-repeat center center;
+  background-size: cover;
+}
+
 .app.result-bg {
   background: url('../images/sakura_dragon_bg.png?v=1') no-repeat center center;
   background-size: cover;
@@ -68,6 +72,10 @@ body {
     radial-gradient(ellipse at 50% 18%, rgba(255, 255, 255, 0.76) 0 22%, rgba(255, 242, 249, 0.36) 35%, transparent 56%),
     radial-gradient(ellipse at 50% 55%, rgba(255, 255, 255, 0.2) 0 24%, rgba(91, 22, 76, 0.22) 55%, transparent 76%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.2), rgba(70, 15, 74, 0.12));
+}
+
+.app.init-bg::before {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 210, 232, 0.08));
 }
 
 #appHeader { display: none; }
@@ -90,6 +98,12 @@ body {
   text-shadow:
     0 1px 0 rgba(255, 255, 255, 0.82),
     0 0 18px rgba(255, 255, 255, 0.75);
+}
+
+.app.init-bg .title-area,
+.app.init-bg .card-scene,
+.app.init-bg .footer-brand {
+  display: none;
 }
 
 .title-area h1 {
@@ -468,10 +482,10 @@ body {
 
 .action-container {
   position: absolute;
-  top: 80.6%;
-  left: 8.5%;
-  width: 83%;
-  height: 7.7%;
+  top: 76.8%;
+  left: 7%;
+  width: 86%;
+  height: 8.2%;
   z-index: 20;
   display: flex;
   align-items: center;
@@ -513,6 +527,24 @@ body {
   letter-spacing: 4px;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.84);
   transition: filter 0.25s ease, transform 0.25s ease, opacity 0.25s ease;
+}
+
+.app.init-bg .tarot-btn {
+  overflow: hidden;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: url('../images/draw_button.png?v=1') center center / 100% 100% no-repeat;
+  color: transparent;
+  box-shadow:
+    0 10px 24px rgba(84, 20, 80, 0.18),
+    0 0 28px rgba(255, 182, 220, 0.46);
+  text-shadow: none;
+}
+
+.app.init-bg .tarot-btn::before,
+.app.init-bg .tarot-btn::after {
+  display: none;
 }
 
 .tarot-btn::before {
