@@ -493,6 +493,11 @@ body {
   justify-content: center;
 }
 
+.app.init-bg .action-container {
+  top: 84.2%;
+  height: 7.8%;
+}
+
 .app.result-bg .action-container {
   top: 82.6%;
   left: 4.5%;
