@@ -26,6 +26,8 @@ const resultCardNameJa   = document.getElementById('resultCardNameJa');
 const readingPanel       = document.getElementById('readingPanel');
 const readingCardMeta    = document.getElementById('readingCardMeta');
 const readingMessage     = document.getElementById('readingMessage');
+const readingDetail      = document.getElementById('readingDetail');
+const readingMore        = document.getElementById('readingMore');
 const loadingInline      = document.getElementById('loadingInline');
 const loadingText        = document.getElementById('loadingText');
 const loveFortune        = document.getElementById('loveFortune');
@@ -46,6 +48,12 @@ function init() {
   cardScene.addEventListener('click', handleInvoke);
   invokeBtn.addEventListener('click', handleInvoke);
   againBtn.addEventListener('click', handleReset);
+  if (readingMore && readingPanel) {
+    readingMore.addEventListener('click', () => {
+      const expanded = readingPanel.classList.toggle('expanded');
+      readingMore.textContent = expanded ? '閉じる…⌃' : '続きを読む…⌄';
+    });
+  }
   if (historyLink) historyLink.addEventListener('click', openHistory);
   if (modalClose) modalClose.addEventListener('click', closeHistory);
   if (modalOverlay) {
@@ -70,18 +78,20 @@ async function handleInvoke() {
   if (readingPanel) readingPanel.setAttribute('aria-hidden', 'true');
   if (readingCardMeta) readingCardMeta.textContent = '';
   if (readingMessage) readingMessage.textContent = '';
+  if (readingDetail) readingDetail.textContent = '';
+  if (readingMore) readingMore.classList.add('is-hidden');
 
   // AIメッセージを取得
   const message = await fetchMessage(card, isReversed);
 
   // メッセージと結果追加要素を表示
-  showResult(card, isReversed, message);
+  const reading = showResult(card, isReversed, message);
   saveHistory({
     date: new Date().toLocaleString('ja-JP'),
     cardEn: card.en,
     cardJa: card.ja,
     reversed: isReversed,
-    message,
+    message: `${reading.summary}\n${reading.detail}`,
   });
 
   if (loadingInline) loadingInline.classList.remove('show');
@@ -116,9 +126,11 @@ function flipCard() {
 
 // ========== 結果表示 ==========
 function showResult(card, isReversed, message) {
+  const reading = formatReadingMessage(message, card, isReversed);
+
   // メッセージ切り替え
-  cardMainMessage.innerHTML = message.replace(/\n/g, '<br>');
-  resultCardMessage.innerHTML = message.replace(/\n/g, '<br>');
+  cardMainMessage.innerHTML = reading.summary.replace(/\n/g, '<br>');
+  resultCardMessage.innerHTML = reading.summary.replace(/\n/g, '<br>');
   if (cardGuideTitle) {
     cardGuideTitle.textContent = `― 月の導き ―`;
   }
@@ -133,13 +145,23 @@ function showResult(card, isReversed, message) {
     ? `${card.ja}<br><span style="font-size:8px;color:#e08080;letter-spacing:1px;">逆 位 置</span>`
     : card.ja;
   if (readingCardMeta) {
-    readingCardMeta.textContent = `${card.ja}（${card.en}）${isReversed ? '【逆位置】' : '【正位置】'}`;
+    readingCardMeta.textContent = '';
   }
   if (readingMessage) {
-    readingMessage.textContent = message;
+    readingMessage.textContent = reading.summary;
+  }
+  if (readingDetail) {
+    readingDetail.textContent = reading.detail;
+  }
+  if (readingPanel) {
+    readingPanel.classList.remove('expanded');
   }
   if (readingPanel) {
     readingPanel.setAttribute('aria-hidden', 'false');
+  }
+  if (readingMore) {
+    readingMore.textContent = '続きを読む…⌄';
+    readingMore.classList.toggle('is-hidden', reading.detail.length < 70);
   }
   if (cardScene) {
     cardScene.setAttribute('aria-hidden', 'true');
@@ -159,6 +181,8 @@ function showResult(card, isReversed, message) {
     appContainer.classList.remove('init-bg');
     appContainer.classList.add('result-bg');
   }
+
+  return reading;
 }
 
 // ========== Gemini API 呼び出し（プロキシ経由） ==========
@@ -171,15 +195,15 @@ async function fetchMessage(card, isReversed) {
 - テーマ: 気になるあの人の気持ち
 
 要件:
-- 30〜50文字程度で、短く一言で心に響くメッセージにしてください
-- 占いカードの中央に配置されるため、長い文章は避けてください
+- 1行目は「一言: 」に続けて、30〜45文字程度の短い結論を書いてください
+- 2行目は「詳細: 」に続けて、80〜120文字程度で、相手の気持ちや今後の向き合い方をやさしく説明してください
 - 神秘的で温かみのある文体にしてください
 - 「。」で文を区切ってください
 ${isReversed
   ? '- 逆位置なので「まだ迷いがある」「距離を感じている」「気持ちを整理中」など、少し慎重・内向きなニュアンスにしてください。ただし希望が感じられる表現にしてください。'
   : '- 正位置なので「気になっている」「会いたい」「想いを温めている」など、ポジティブで前向きな表現にしてください。'}
 
-メッセージのみを出力してください（前置きや説明は不要）。
+上記2行のみを出力してください（前置きや説明は不要）。
 `.trim();
 
   const MAX_RETRIES = 1;
@@ -201,7 +225,7 @@ ${isReversed
 
       if (response.status === 429) {
         if (attempt < MAX_RETRIES) continue;
-        return getCardMessage(card, isReversed);
+        return buildFallbackReading(card, isReversed);
       }
 
       if (!response.ok) {
@@ -210,14 +234,14 @@ ${isReversed
 
       const data = await response.json();
       const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-      return text ? text.trim() : getCardMessage(card, isReversed);
+      return text ? text.trim() : buildFallbackReading(card, isReversed);
 
     } catch (err) {
       if (attempt < MAX_RETRIES) continue;
-      return getCardMessage(card, isReversed);
+      return buildFallbackReading(card, isReversed);
     }
   }
-  return getCardMessage(card, isReversed);
+  return buildFallbackReading(card, isReversed);
 }
 
 // ========== リセット ==========
@@ -247,6 +271,12 @@ function handleReset() {
   if (readingPanel) readingPanel.setAttribute('aria-hidden', 'true');
   if (readingCardMeta) readingCardMeta.textContent = '';
   if (readingMessage) readingMessage.textContent = '';
+  if (readingDetail) readingDetail.textContent = '';
+  if (readingPanel) readingPanel.classList.remove('expanded');
+  if (readingMore) {
+    readingMore.textContent = '続きを読む…⌄';
+    readingMore.classList.add('is-hidden');
+  }
   if (cardScene) cardScene.setAttribute('aria-hidden', 'false');
   if (appContainer) {
     appContainer.classList.remove('result-bg');
@@ -297,6 +327,35 @@ function setBusy(busy) {
   invokeBtn.disabled = busy;
   againBtn.disabled = busy;
   cardScene.classList.toggle('is-disabled', busy);
+}
+
+function formatReadingMessage(rawMessage, card, isReversed) {
+  const raw = String(rawMessage || '').trim();
+  const summaryMatch = raw.match(/(?:^|\n)\s*(?:一言|結論)\s*[:：]\s*(.+)/);
+  const detailMatch = raw.match(/(?:^|\n)\s*詳細\s*[:：]\s*([\s\S]+)/);
+  const firstLine = raw.split(/\n+/)[0]?.replace(/^[-・\s]+/, '').trim() || '';
+  const summary = summaryMatch ? summaryMatch[1].trim() : firstLine.replace(/^(?:一言|結論)\s*[:：]\s*/, '');
+  const detail = detailMatch
+    ? detailMatch[1].trim()
+    : buildDetailMessage(card, isReversed);
+
+  return {
+    summary: summary || getCardMessage(card, isReversed),
+    detail: detail || buildDetailMessage(card, isReversed),
+  };
+}
+
+function buildFallbackReading(card, isReversed) {
+  const summary = getCardMessage(card, isReversed);
+  return `一言: ${summary}\n詳細: ${buildDetailMessage(card, isReversed)}`;
+}
+
+function buildDetailMessage(card, isReversed) {
+  if (isReversed) {
+    return '今のあの人は、あなたへの気持ちを抱えながらも、素直に表すことに少し慎重になっているようです。焦って答えを求めるより、相手の小さな反応や距離感を見守ることで、関係はゆっくり整っていきます。';
+  }
+
+  return 'このカードは、あの人の中にあなたを意識する気持ちが静かに育っていることを示しています。今は無理に動かすより、やさしい言葉や自然な関わりを重ねることで、ふたりの空気が少しずつ近づいていくでしょう。';
 }
 
 function escapeHtml(value) {
