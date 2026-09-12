@@ -101,7 +101,6 @@ body {
 }
 
 .app.init-bg .title-area,
-.app.init-bg .card-scene,
 .app.init-bg .footer-brand {
   display: none;
 }
@@ -146,6 +145,8 @@ body {
 }
 
 .app.init-bg .card-scene {
+  top: 31.5%;
+  width: min(48%, 224px);
   animation: cardFloat 4.8s ease-in-out infinite;
 }
 
