@@ -145,8 +145,8 @@ body {
 }
 
 .app.init-bg .card-scene {
-  top: 31.5%;
-  width: min(48%, 224px);
+  top: 30.8%;
+  width: min(54%, 252px);
   animation: cardFloat 4.8s ease-in-out infinite;
 }
 
