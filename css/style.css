@@ -58,7 +58,7 @@ body {
 }
 
 .app.result-bg {
-  background: url('../images/sakura_dragon_bg.png?v=1') no-repeat center center;
+  background: url('../images/result_dragon_bg.png?v=1') no-repeat center center;
   background-size: cover;
 }
 
@@ -102,6 +102,12 @@ body {
 
 .app.init-bg .title-area,
 .app.init-bg .footer-brand {
+  display: none;
+}
+
+.app.result-bg .title-area,
+.app.result-bg .footer-brand,
+.app.result-bg .history-link-container {
   display: none;
 }
 
@@ -158,7 +164,7 @@ body {
 }
 
 .app.result-bg .love-fortune {
-  top: 70.8%;
+  display: none;
 }
 
 .card-scene.is-disabled {
@@ -353,24 +359,21 @@ body {
 
 .reading-panel {
   position: absolute;
-  top: 32.5%;
+  top: 27.8%;
   left: 7%;
   width: 86%;
-  min-height: 34%;
+  aspect-ratio: 492 / 369;
+  min-height: 0;
   z-index: 18;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 22px 22px 18px;
-  border: 1px solid rgba(172, 127, 85, 0.55);
-  border-radius: 12px;
-  background:
-    linear-gradient(180deg, rgba(255, 252, 247, 0.96), rgba(255, 246, 239, 0.92)),
-    radial-gradient(circle at 50% 0%, rgba(255, 232, 244, 0.45), transparent 45%);
-  box-shadow:
-    inset 0 0 0 3px rgba(255, 255, 255, 0.62),
-    0 8px 30px rgba(93, 42, 58, 0.22),
-    0 0 26px rgba(255, 226, 238, 0.48);
+  justify-content: flex-start;
+  padding: 21% 9.5% 8.5%;
+  border: none;
+  border-radius: 9px;
+  background: url('../images/result_reading_panel.png?v=1') center center / 100% 100% no-repeat;
+  box-shadow: 0 8px 28px rgba(93, 42, 58, 0.13);
   color: var(--deep);
   opacity: 0;
   visibility: hidden;
@@ -381,12 +384,7 @@ body {
 
 .reading-panel::before,
 .reading-panel::after {
-  content: '';
-  position: absolute;
-  width: 34px;
-  height: 34px;
-  border-color: rgba(172, 127, 85, 0.62);
-  pointer-events: none;
+  display: none;
 }
 
 .reading-panel::before {
@@ -413,7 +411,7 @@ body {
 
 .reading-divider {
   width: 80%;
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   gap: 8px;
@@ -428,6 +426,7 @@ body {
 }
 
 .reading-guide {
+  display: none;
   margin-top: 4px;
   color: #6f3158;
   font-size: clamp(13px, 3.7vw, 17px);
@@ -436,20 +435,21 @@ body {
 }
 
 .reading-card-meta {
-  margin-top: 8px;
+  margin-top: 0;
   color: rgba(75, 7, 50, 0.78);
-  font-size: clamp(10px, 3vw, 13px);
+  font-size: clamp(11px, 3.2vw, 14px);
   font-weight: 700;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px;
+  text-align: center;
 }
 
 .reading-message {
   width: 100%;
-  margin-top: 12px;
+  margin-top: 10px;
   color: #37213e;
-  font-size: clamp(15px, 4.3vw, 19px);
+  font-size: clamp(16px, 4.5vw, 20px);
   font-weight: 700;
-  line-height: 1.78;
+  line-height: 1.72;
   letter-spacing: 0.3px;
   text-align: left;
   white-space: pre-line;
@@ -458,7 +458,7 @@ body {
 .reading-more {
   align-self: flex-end;
   margin-top: auto;
-  padding-top: 10px;
+  padding-top: 6px;
   color: #6f3158;
   font-size: clamp(11px, 3.1vw, 14px);
   font-weight: 700;
@@ -499,10 +499,10 @@ body {
 }
 
 .app.result-bg .action-container {
-  top: 82.6%;
-  left: 4.5%;
+  top: 81.6%;
+  left: 4.2%;
   width: 43%;
-  height: 6.4%;
+  height: 6.2%;
 }
 
 .tarot-btn {
@@ -597,17 +597,16 @@ body {
 }
 
 .app.result-bg .tarot-btn.again-btn {
-  padding: 0 12px 1px;
-  border-color: rgba(109, 55, 92, 0.75);
-  background: linear-gradient(180deg, rgba(83, 35, 85, 0.96), rgba(55, 20, 70, 0.94));
-  color: #fff7fb;
-  font-size: clamp(12px, 3.4vw, 15px);
-  font-weight: 700;
-  letter-spacing: 0.8px;
-  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.45);
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.2),
-    0 6px 14px rgba(60, 20, 70, 0.28);
+  overflow: hidden;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: url('../images/again_button.png?v=1') center center / 100% 100% no-repeat;
+  color: transparent;
+  font-size: 0;
+  letter-spacing: 0;
+  text-shadow: none;
+  box-shadow: 0 6px 14px rgba(60, 20, 70, 0.2);
 }
 
 .loading-inline {
@@ -653,20 +652,16 @@ body {
 }
 
 .app.result-bg .stores-link-container {
-  top: 82.6%;
-  left: 51%;
-  width: 44.5%;
+  top: 81.6%;
+  left: 52.8%;
+  width: 43%;
+  height: 6.2%;
 }
 
 .app.init-bg .stores-link-container,
 .app.init-bg .history-link-container,
 .app.init-bg .love-fortune {
   display: none;
-}
-
-.app.result-bg .footer-brand {
-  top: 93.3%;
-  display: flex;
 }
 
 .footer-brand {
@@ -723,19 +718,21 @@ body {
 
 .app.result-bg .stores-link {
   width: 100%;
-  min-height: 42px;
-  padding: 0 12px;
-  border: 1px solid rgba(198, 147, 82, 0.72);
+  height: 100%;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+  border: none;
   border-radius: 999px;
-  background: linear-gradient(180deg, rgba(255, 252, 247, 0.96), rgba(255, 235, 218, 0.94));
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.68),
-    0 6px 14px rgba(93, 42, 58, 0.18);
-  font-size: clamp(11px, 3.1vw, 14px);
-  letter-spacing: 0.2px;
+  background: url('../images/stores_button.png?v=1') center center / 100% 100% no-repeat;
+  box-shadow: 0 6px 14px rgba(93, 42, 58, 0.14);
+  color: transparent;
+  font-size: 0;
+  letter-spacing: 0;
+  text-shadow: none;
 }
 
-.stores-link::after { content: '  >'; }
+.app.result-bg .stores-link::after { content: ''; }
 
 .history-link-container {
   position: absolute;
