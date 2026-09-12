@@ -16,8 +16,8 @@
   let H = 0;
   let dpr = 1;
   const petals = [];
+  const foregroundPetals = [];
   const orbitPetals = [];
-  const sparkles = [];
   const petalImage = new Image();
   petalImage.src = 'images/petal_particle.png?v=1';
 
@@ -34,7 +34,11 @@
   }
 
   function petalCount() {
-    return W < 520 ? 24 : 42;
+    return W < 520 ? 30 : 52;
+  }
+
+  function foregroundPetalCount() {
+    return W < 520 ? 10 : 16;
   }
 
   function resetPetal(p, initial = false) {
@@ -42,20 +46,34 @@
     const sideBand = W * (Math.random() * 0.22);
     p.x = fromLeft ? -30 + sideBand : W + 30 - sideBand;
     p.y = initial ? Math.random() * H : -40 - Math.random() * 120;
-    p.size = 7 + Math.random() * 12;
-    p.vx = (fromLeft ? 1 : -1) * (0.25 + Math.random() * 0.55);
-    p.vy = 0.55 + Math.random() * 1.0;
+    p.size = 10 + Math.random() * 15;
+    p.vx = (fromLeft ? 1 : -1) * (0.42 + Math.random() * 0.72);
+    p.vy = 0.38 + Math.random() * 0.72;
     p.swing = Math.random() * Math.PI * 2;
-    p.swingSpeed = 0.018 + Math.random() * 0.025;
+    p.swingSpeed = 0.022 + Math.random() * 0.034;
     p.rotation = Math.random() * Math.PI * 2;
-    p.spin = (Math.random() - 0.5) * 0.035;
-    p.alpha = 0.42 + Math.random() * 0.34;
+    p.spin = (Math.random() - 0.5) * 0.055;
+    p.alpha = 0.58 + Math.random() * 0.28;
+  }
+
+  function resetForegroundPetal(p, initial = false) {
+    const fromLeft = Math.random() < 0.58;
+    p.x = fromLeft ? -70 - Math.random() * 90 : W + 40 + Math.random() * 80;
+    p.y = initial ? H * (0.18 + Math.random() * 0.82) : H + 40 + Math.random() * 160;
+    p.size = 18 + Math.random() * 26;
+    p.vx = (fromLeft ? 1 : -1) * (0.72 + Math.random() * 1.2);
+    p.vy = -0.78 - Math.random() * 0.92;
+    p.swing = Math.random() * Math.PI * 2;
+    p.swingSpeed = 0.026 + Math.random() * 0.036;
+    p.rotation = Math.random() * Math.PI * 2;
+    p.spin = (Math.random() - 0.5) * 0.068;
+    p.alpha = 0.5 + Math.random() * 0.3;
   }
 
   function initParticles() {
     petals.length = 0;
+    foregroundPetals.length = 0;
     orbitPetals.length = 0;
-    sparkles.length = 0;
 
     for (let i = 0; i < petalCount(); i++) {
       const petal = {};
@@ -63,28 +81,24 @@
       petals.push(petal);
     }
 
-    const orbitCount = W < 520 ? 26 : 40;
+    for (let i = 0; i < foregroundPetalCount(); i++) {
+      const petal = {};
+      resetForegroundPetal(petal, true);
+      foregroundPetals.push(petal);
+    }
+
+    const orbitCount = W < 520 ? 34 : 52;
     for (let i = 0; i < orbitCount; i++) {
       orbitPetals.push({
         angle: Math.random() * Math.PI * 2,
-        radius: 0.28 + Math.random() * 0.28,
-        size: 8 + Math.random() * 12,
-        speed: 0.004 + Math.random() * 0.006,
+        radius: 0.25 + Math.random() * 0.34,
+        size: 11 + Math.random() * 16,
+        speed: 0.005 + Math.random() * 0.008,
         wobble: Math.random() * Math.PI * 2,
-        wobbleSpeed: 0.015 + Math.random() * 0.02,
+        wobbleSpeed: 0.018 + Math.random() * 0.024,
         rotation: Math.random() * Math.PI * 2,
-        spin: (Math.random() - 0.5) * 0.045,
-        alpha: 0.46 + Math.random() * 0.36,
-      });
-    }
-
-    for (let i = 0; i < 36; i++) {
-      sparkles.push({
-        x: Math.random() * W,
-        y: Math.random() * H,
-        r: Math.random() * 1.4 + 0.4,
-        a: Math.random() * 0.5,
-        da: (Math.random() * 0.006 + 0.002) * (Math.random() < 0.5 ? 1 : -1),
+        spin: (Math.random() - 0.5) * 0.06,
+        alpha: 0.52 + Math.random() * 0.34,
       });
     }
   }
@@ -110,6 +124,7 @@
     ctx.translate(p.x, p.y);
     ctx.rotate(p.rotation);
     ctx.globalAlpha = p.alpha;
+    ctx.filter = 'saturate(1.24) contrast(1.08)';
 
     if (petalImage.complete && petalImage.naturalWidth > 0) {
       const w = p.size * 2.7;
@@ -129,20 +144,6 @@
       ctx.fill();
     }
     ctx.restore();
-  }
-
-  function drawSparkles() {
-    for (const s of sparkles) {
-      s.a += s.da;
-      if (s.a > 0.55 || s.a < 0.08) s.da *= -1;
-
-      if (isSafeZone(s.x, s.y)) continue;
-
-      ctx.beginPath();
-      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(255,248,251,${s.a.toFixed(3)})`;
-      ctx.fill();
-    }
   }
 
   function drawOrbitPetals() {
@@ -179,6 +180,19 @@
 
       if (p.y > H + 60 || p.x < -100 || p.x > W + 100) {
         resetPetal(p);
+      }
+
+      drawPetal(p);
+    }
+
+    for (const p of foregroundPetals) {
+      p.swing += p.swingSpeed;
+      p.rotation += p.spin;
+      p.x += p.vx + Math.sin(p.swing) * 1.35;
+      p.y += p.vy + Math.cos(p.swing) * 0.35;
+
+      if (p.y < -100 || p.x < -180 || p.x > W + 180) {
+        resetForegroundPetal(p);
       }
 
       drawPetal(p);
