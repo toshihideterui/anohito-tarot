@@ -363,7 +363,7 @@ body {
 
 .reading-panel {
   position: absolute;
-  top: 27.8%;
+  top: 31.2%;
   left: 7%;
   width: 86%;
   aspect-ratio: 492 / 369;
@@ -498,7 +498,7 @@ body {
 }
 
 .app.init-bg .action-container {
-  top: 84.2%;
+  top: 87.1%;
   height: 7.8%;
 }
 
