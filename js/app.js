@@ -48,6 +48,12 @@ function init() {
   cardScene.addEventListener('click', handleInvoke);
   invokeBtn.addEventListener('click', handleInvoke);
   againBtn.addEventListener('click', handleReset);
+  preloadImages([
+    'images/result_dragon_bg.png?v=1',
+    'images/result_reading_panel.png?v=1',
+    'images/again_button.png?v=1',
+    'images/stores_button.png?v=1',
+  ]);
   if (readingMore && readingPanel) {
     readingMore.addEventListener('click', () => {
       const expanded = readingPanel.classList.toggle('expanded');
@@ -128,6 +134,11 @@ function flipCard() {
 function showResult(card, isReversed, message) {
   const reading = formatReadingMessage(message, card, isReversed);
 
+  if (appContainer) {
+    appContainer.classList.remove('init-bg');
+    appContainer.classList.add('result-bg');
+  }
+
   // メッセージ切り替え
   cardMainMessage.innerHTML = reading.summary.replace(/\n/g, '<br>');
   resultCardMessage.innerHTML = reading.summary.replace(/\n/g, '<br>');
@@ -177,10 +188,6 @@ function showResult(card, isReversed, message) {
   // アクションボタンを切り替え
   invokeBtn.style.display = 'none';
   againBtn.style.display = 'flex';
-  if (appContainer) {
-    appContainer.classList.remove('init-bg');
-    appContainer.classList.add('result-bg');
-  }
 
   return reading;
 }
@@ -327,6 +334,13 @@ function setBusy(busy) {
   invokeBtn.disabled = busy;
   againBtn.disabled = busy;
   cardScene.classList.toggle('is-disabled', busy);
+}
+
+function preloadImages(srcs) {
+  for (const src of srcs) {
+    const img = new Image();
+    img.src = src;
+  }
 }
 
 function formatReadingMessage(rawMessage, card, isReversed) {
