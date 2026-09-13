@@ -12,6 +12,7 @@
 
   const ctx = canvas.getContext('2d');
   const app = document.getElementById('appContainer');
+  const readingPanel = document.getElementById('readingPanel');
   let W = 0;
   let H = 0;
   let dpr = 1;
@@ -91,9 +92,9 @@
     for (let i = 0; i < orbitCount; i++) {
       orbitPetals.push({
         angle: Math.random() * Math.PI * 2,
-        radius: 0.25 + Math.random() * 0.34,
-        size: 11 + Math.random() * 16,
-        speed: 0.005 + Math.random() * 0.008,
+        radius: 0.54 + Math.random() * 0.42,
+        size: 10 + Math.random() * 18,
+        speed: 0.004 + Math.random() * 0.009,
         wobble: Math.random() * Math.PI * 2,
         wobbleSpeed: 0.018 + Math.random() * 0.024,
         rotation: Math.random() * Math.PI * 2,
@@ -103,10 +104,23 @@
     }
   }
 
-  function isSafeZone(x, y) {
+  function isSafeZone(x, y, margin = 0) {
     if (!app) return false;
     const rect = app.getBoundingClientRect();
     if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) return false;
+
+    if (readingPanel && app.classList.contains('result-bg')) {
+      const panel = readingPanel.getBoundingClientRect();
+      const pad = 10 + margin;
+      if (
+        x > panel.left - pad &&
+        x < panel.right + pad &&
+        y > panel.top - pad &&
+        y < panel.bottom + pad
+      ) {
+        return true;
+      }
+    }
 
     const rx = (x - rect.left) / rect.width;
     const ry = (y - rect.top) / rect.height;
@@ -118,7 +132,7 @@
   }
 
   function drawPetal(p) {
-    if (isSafeZone(p.x, p.y)) return;
+    if (isSafeZone(p.x, p.y, p.size * 1.5)) return;
 
     ctx.save();
     ctx.translate(p.x, p.y);
@@ -151,16 +165,17 @@
 
     const rect = app.getBoundingClientRect();
     const cx = rect.left + rect.width * 0.5;
-    const cy = rect.top + rect.height * 0.55;
-    const base = Math.min(rect.width, rect.height) * 0.48;
+    const cy = rect.top + rect.height * 0.58;
+    const baseX = rect.width * 0.55;
+    const baseY = rect.height * 0.28;
 
     for (const p of orbitPetals) {
       p.angle += p.speed;
       p.wobble += p.wobbleSpeed;
       p.rotation += p.spin;
 
-      const rx = base * p.radius * 1.15;
-      const ry = base * p.radius * 0.7;
+      const rx = baseX * p.radius;
+      const ry = baseY * p.radius;
       p.x = cx + Math.cos(p.angle) * rx + Math.sin(p.wobble) * 12;
       p.y = cy + Math.sin(p.angle) * ry + Math.cos(p.wobble) * 8;
 
