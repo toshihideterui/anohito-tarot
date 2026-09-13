@@ -187,7 +187,7 @@ body {
 }
 
 .app.result-bg .love-fortune {
-  top: 70.6%;
+  top: calc(36.2% + min(64.5vw, 283.8px) + 2px);
   left: 18%;
   width: 64%;
   z-index: 19;
@@ -530,17 +530,19 @@ body {
 }
 
 .love-label {
-  margin-bottom: 2px;
+  margin-bottom: 0;
   color: var(--ink);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
+  line-height: 1.05;
   letter-spacing: 3px;
   text-shadow: 0 1px 0 rgba(255,255,255,0.8), 0 0 12px rgba(255,255,255,0.75);
 }
 
 .stars-row {
   color: #b66f1c;
-  font-size: 20px;
+  font-size: 19px;
+  line-height: 1;
   letter-spacing: 4px;
   text-shadow: 0 1px 0 rgba(255,255,255,0.75), 0 0 10px rgba(255, 219, 145, 0.75);
 }
