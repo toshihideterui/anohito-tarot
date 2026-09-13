@@ -52,7 +52,8 @@ function init() {
   invokeBtn.addEventListener('click', handleInvoke);
   againBtn.addEventListener('click', handleReset);
   preloadImages([
-    'images/result_dragon_bg.png?v=1',
+    'images/result_bg_no_dragon.png?v=1',
+    'images/result_dragon_layer.png?v=1',
     'images/result_reading_panel.png?v=1',
     'images/again_button.png?v=1',
     'images/stores_button.png?v=1',
