@@ -38,6 +38,7 @@ const modalOverlay       = document.getElementById('modalOverlay');
 const modalClose         = document.getElementById('modalClose');
 const historyList        = document.getElementById('historyList');
 const debugToast         = document.getElementById('debugToast');
+const transitionSound    = new Audio('audio/dragon_transition.mp3?v=1');
 
 // ========== 状態変数 ==========
 let isFlipped   = false;
@@ -45,6 +46,8 @@ let isAnimating = false;
 
 // ========== 初期化 ==========
 function init() {
+  transitionSound.preload = 'auto';
+  transitionSound.volume = 0.82;
   cardScene.addEventListener('click', handleInvoke);
   invokeBtn.addEventListener('click', handleInvoke);
   againBtn.addEventListener('click', handleReset);
@@ -77,6 +80,7 @@ async function handleInvoke() {
   if (isAnimating || isFlipped) return;
   isAnimating = true;
   setBusy(true);
+  playTransitionSound();
 
   const { card, isReversed } = drawCard();
 
@@ -341,6 +345,13 @@ function preloadImages(srcs) {
     const img = new Image();
     img.src = src;
   }
+}
+
+function playTransitionSound() {
+  transitionSound.currentTime = 0;
+  transitionSound.play().catch(() => {
+    // Browser autoplay rules can block sound on some devices.
+  });
 }
 
 function formatReadingMessage(rawMessage, card, isReversed) {
