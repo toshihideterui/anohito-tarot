@@ -531,20 +531,26 @@ body {
 
 .love-label {
   margin-bottom: 0;
-  color: var(--ink);
+  color: #4a1238;
   font-size: 10px;
   font-weight: 700;
   line-height: 1.05;
   letter-spacing: 3px;
-  text-shadow: 0 1px 0 rgba(255,255,255,0.8), 0 0 12px rgba(255,255,255,0.75);
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9),
+    0 0 8px rgba(255, 246, 255, 0.95),
+    0 1px 4px rgba(68, 18, 58, 0.32);
 }
 
 .stars-row {
-  color: #b66f1c;
+  color: #f5c24f;
   font-size: 19px;
   line-height: 1;
   letter-spacing: 4px;
-  text-shadow: 0 1px 0 rgba(255,255,255,0.75), 0 0 10px rgba(255, 219, 145, 0.75);
+  text-shadow:
+    0 1px 0 rgba(92, 45, 12, 0.74),
+    0 0 8px rgba(255, 246, 177, 0.9),
+    0 0 14px rgba(130, 67, 18, 0.55);
 }
 
 .action-container {
